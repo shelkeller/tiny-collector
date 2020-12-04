@@ -23,9 +23,10 @@ const generatePlots = (size) => {
 }
 const HexGridDemo = () =>  {
   const getHexProps = (hexagon) => {
-    let fill = "#007aff";
+    let fillOptions = ["#86d9b2", "#79c98c", "#a4dec6", "#abd69c"]
+    let fill = fillOptions[roll(fillOptions.length)];
     if (hexagon.isFlower){
-      fill = "red";
+      fill = "#bf5e69";
     }
     return {
       style: {
@@ -42,16 +43,6 @@ const HexGridDemo = () =>  {
       {hexagon.isFlower &&
         <LocalFloristRounded/>
       }
-      <text
-        x="50%"
-        y="50%"
-        fontSize={100}
-        fontWeight="lighter"
-        style={{ fill: 'white' }}
-        textAnchor="middle"
-      >
-      {hexagon.id}
-      </text>
       </>
     );
   }
