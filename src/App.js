@@ -2,6 +2,8 @@ import logo from './logo.svg';
 import './App.css';
 import HexagonGrid from 'react-hexagon-grid';
 import times from 'lodash/times';
+import LocalFloristRounded from "@material-ui/icons/LocalFloristRounded";
+
 
 function roll(max) {
   return Math.floor(Math.random() * Math.floor(max));
@@ -36,6 +38,10 @@ const HexGridDemo = () =>  {
 
   const renderHexagonContent = (hexagon) => {
     return (
+      <>
+      {hexagon.isFlower &&
+        <LocalFloristRounded/>
+      }
       <text
         x="50%"
         y="50%"
@@ -44,8 +50,9 @@ const HexGridDemo = () =>  {
         style={{ fill: 'white' }}
         textAnchor="middle"
       >
-        {hexagon.name}{hexagon.id}
+      {hexagon.id}
       </text>
+      </>
     );
   }
 
