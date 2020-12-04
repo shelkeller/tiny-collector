@@ -1,23 +1,23 @@
 {
   "files": {
-    "main.css": "/tiny-collector/static/css/main.8c8b27cf.chunk.css",
-    "main.js": "/tiny-collector/static/js/main.cbd0958f.chunk.js",
-    "main.js.map": "/tiny-collector/static/js/main.cbd0958f.chunk.js.map",
-    "runtime-main.js": "/tiny-collector/static/js/runtime-main.44c95aac.js",
-    "runtime-main.js.map": "/tiny-collector/static/js/runtime-main.44c95aac.js.map",
-    "static/js/2.007b6475.chunk.js": "/tiny-collector/static/js/2.007b6475.chunk.js",
-    "static/js/2.007b6475.chunk.js.map": "/tiny-collector/static/js/2.007b6475.chunk.js.map",
-    "static/js/3.ddb625b4.chunk.js": "/tiny-collector/static/js/3.ddb625b4.chunk.js",
-    "static/js/3.ddb625b4.chunk.js.map": "/tiny-collector/static/js/3.ddb625b4.chunk.js.map",
+    "main.css": "/tiny-collector/static/css/main.63a8c65e.chunk.css",
+    "main.js": "/tiny-collector/static/js/main.f4d63f64.chunk.js",
+    "main.js.map": "/tiny-collector/static/js/main.f4d63f64.chunk.js.map",
+    "runtime-main.js": "/tiny-collector/static/js/runtime-main.2d06a6e8.js",
+    "runtime-main.js.map": "/tiny-collector/static/js/runtime-main.2d06a6e8.js.map",
+    "static/js/2.8d2bec42.chunk.js": "/tiny-collector/static/js/2.8d2bec42.chunk.js",
+    "static/js/2.8d2bec42.chunk.js.map": "/tiny-collector/static/js/2.8d2bec42.chunk.js.map",
+    "static/js/3.6ed0ba0a.chunk.js": "/tiny-collector/static/js/3.6ed0ba0a.chunk.js",
+    "static/js/3.6ed0ba0a.chunk.js.map": "/tiny-collector/static/js/3.6ed0ba0a.chunk.js.map",
     "index.html": "/tiny-collector/index.html",
-    "static/css/main.8c8b27cf.chunk.css.map": "/tiny-collector/static/css/main.8c8b27cf.chunk.css.map",
-    "static/js/2.007b6475.chunk.js.LICENSE.txt": "/tiny-collector/static/js/2.007b6475.chunk.js.LICENSE.txt",
+    "static/css/main.63a8c65e.chunk.css.map": "/tiny-collector/static/css/main.63a8c65e.chunk.css.map",
+    "static/js/2.8d2bec42.chunk.js.LICENSE.txt": "/tiny-collector/static/js/2.8d2bec42.chunk.js.LICENSE.txt",
     "static/media/logo.6ce24c58.svg": "/tiny-collector/static/media/logo.6ce24c58.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.44c95aac.js",
-    "static/js/2.007b6475.chunk.js",
-    "static/css/main.8c8b27cf.chunk.css",
-    "static/js/main.cbd0958f.chunk.js"
+    "static/js/runtime-main.2d06a6e8.js",
+    "static/js/2.8d2bec42.chunk.js",
+    "static/css/main.63a8c65e.chunk.css",
+    "static/js/main.f4d63f64.chunk.js"
   ]
 }
