@@ -3,24 +3,28 @@ import './App.css';
 import HexagonGrid from 'react-hexagon-grid';
 import times from 'lodash/times';
 import LocalFloristRounded from "@material-ui/icons/LocalFloristRounded";
+import PlotRow from './components/PlotGrid';
 
-
+// returns an integer between 0 and max
 function roll(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
+//returns a list of "plot" objects: {id, isFlower, name}
 const generatePlots = (size) => {
   let plots = [];
   times(size, id => {
-      let dice = roll(100);
-      if (dice<=3){
-        plots[id] = { id: id, isFlower: true, name: "flower"};
+      let dice = roll(100); // roll a 100 sided die
+      if (dice<=3){ // around a 3 percent chance of rolling a flower
+        plots[id] = { id: id, isFlower: true, content: "flower"};
       } else {
-        plots[id] = {id: id, isFlower: false, name: "grass"};
+        plots[id] = {id: id, isFlower: false, content: "grass"};
       }
   });
   return plots;
 }
+
+
 const HexGridDemo = () =>  {
   const getHexProps = (hexagon) => {
     let fillOptions = ["#86d9b2", "#79c98c", "#a4dec6", "#abd69c"]
@@ -47,13 +51,11 @@ const HexGridDemo = () =>  {
     );
   }
 
-  let hexagons = generatePlots(102);
-
   return (
     <HexagonGrid
     gridWidth={600}
     gridHeight={600}
-    hexagons={hexagons}
+    hexagons={generatePlots(64)}
     hexProps={getHexProps}
     renderHexagonContent={renderHexagonContent}
     />
@@ -61,17 +63,29 @@ const HexGridDemo = () =>  {
 }
 
 function App() {
+  const rowSize = 7;
+  const plots2D = [];
+  let hexagons = generatePlots(rowSize*rowSize);
+
+  while(hexagons.length) plots2D.push(hexagons.splice(0, rowSize));
   return (
     <>
     <div className="App">
       <header className="App-header">
-      <div>
+      <div style={{justifyContent: "center"}}>
       <HexGridDemo />
       </div>
         <p>
           TINY COLLECTOR
         </p>
       </header>
+      <div className="honeycomb">
+        {plots2D.map((plots, i) => {
+          return (
+              <PlotRow plots={plots} />
+          )
+        })}
+      </div>
     </div>
     </>
   );

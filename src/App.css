@@ -14,7 +14,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #88aacc;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -26,6 +26,11 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.card-1 {
+  -webkit-filter: drop-shadow( 6px 0 2px hsla(0, 0%, 0%, 0.2));
+        filter: drop-shadow( 6px 0 2px hsla(0, 0%, 0%, 0.2));
 }
 
 @keyframes App-logo-spin {
