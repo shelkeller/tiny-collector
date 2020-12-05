@@ -15,51 +15,13 @@ const generatePlots = (size) => {
   let plots = [];
   times(size, id => {
       let dice = roll(100); // roll a 100 sided die
-      if (dice<=10){ // around a 3 percent chance of rolling a flower
+      if (dice<=10){ // around a 10 percent chance of rolling a flower
         plots[id] = { id: id, isFlower: true, content: "flower"};
       } else {
         plots[id] = {id: id, isFlower: false, content: "grass"};
       }
   });
   return plots;
-}
-
-
-const HexGridDemo = () =>  {
-  const getHexProps = (hexagon) => {
-    let fillOptions = ["#86d9b2", "#79c98c", "#a4dec6", "#abd69c"]
-    let fill = fillOptions[roll(fillOptions.length)];
-    if (hexagon.isFlower){
-      fill = "#bf5e69";
-    }
-    return {
-      style: {
-        fill: fill,
-        stroke: 'none'
-      },
-      onClick: () => alert(`Hexagon n.${hexagon.id} has been clicked`)
-    };
-  }
-
-  const renderHexagonContent = (hexagon) => {
-    return (
-      <>
-      {hexagon.isFlower &&
-        <LocalFloristRounded/>
-      }
-      </>
-    );
-  }
-
-  return (
-    <HexagonGrid
-    gridWidth={600}
-    gridHeight={600}
-    hexagons={generatePlots(64)}
-    hexProps={getHexProps}
-    renderHexagonContent={renderHexagonContent}
-    />
-  );
 }
 
 function App() {
@@ -80,23 +42,13 @@ function App() {
     <>
     <div className="App">
       <header className="App-header">
-
-      {
-        // <div>
-      // <HexGridDemo />
-      // </div>
-      }
       tiny collector
       <div className="honeycomb" style={{paddingTop: "50px"}}>
         {plots2D.map((plots, i) => {
-          return (
-              <PlotRow plots={plots} />
-          )
+          return <PlotRow plots={plots} />
         })}
       </div>
-
       </header>
-
     </div>
     </>
   );

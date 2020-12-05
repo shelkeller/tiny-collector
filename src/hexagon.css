@@ -9,9 +9,17 @@ html {
   font-size: 62.5%;
 }
 
+
+
 :root {
-  --hexWidth: 5vw;
+  --hexWidth: 3vw;
   --hexHeight: calc( var(--hexWidth)* 1.732)
+}
+
+@media only screen and (max-width: 768px) {
+  :root {
+    --hexWidth: 6vw;
+  }
 }
 
 
