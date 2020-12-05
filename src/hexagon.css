@@ -9,13 +9,17 @@ html {
   font-size: 62.5%;
 }
 
+:root {
+  --hexWidth: 5vw;
+  --hexHeight: calc( var(--hexWidth)* 1.732)
+}
 
 
 .hexagon {
   position: relative;
   display: inline-block;
   /* left/right margin approx. 25% of .hexagon width + spacing */
-  margin: 1px 18px;
+  margin: 1px calc( var(--hexWidth)*.25);
   background-color: hsl(120, 75%, 75%);
   text-align: center;
 }
@@ -23,9 +27,9 @@ html {
   /* easy way: height is width * 1.732
   actual formula is 2*(width/(2*Math.tan(Math.PI/6)))
   remove border-radius for sharp corners on hexagons */
-  width: 67px;
-  height: 116px;
-  border-radius: 40%/5%;
+  width: var(--hexWidth);
+  height: var(--hexHeight);
+  border-radius: 20%/5%;
 }
 .hexagon::before {
   background-color: inherit;
@@ -43,7 +47,7 @@ html {
 }
 .hexagon:nth-child(even) {
   /* top approx. 50% of .hexagon height + spacing */
-  top: 59px;
+  top: calc((var(--hexHeight)* .50));
 }
 .hexagon:hover {
   filter: drop-shadow(0 0 5px #8899CC);
@@ -55,9 +59,6 @@ html {
   z-index: 110;
 }
 
-.flower{
-  background-color: #bf5e69;
-}
 .hexanone {
   position: relative;
   display: inline-block;
