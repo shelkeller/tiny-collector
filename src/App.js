@@ -15,7 +15,7 @@ const generatePlots = (size) => {
   let plots = [];
   times(size, id => {
       let dice = roll(100); // roll a 100 sided die
-      if (dice<=3){ // around a 3 percent chance of rolling a flower
+      if (dice<=5){ // around a 3 percent chance of rolling a flower
         plots[id] = { id: id, isFlower: true, content: "flower"};
       } else {
         plots[id] = {id: id, isFlower: false, content: "grass"};
@@ -63,11 +63,19 @@ const HexGridDemo = () =>  {
 }
 
 function App() {
-  const rowSize = 7;
+  const rowSize = 8;
   const plots2D = [];
-  let hexagons = generatePlots(rowSize*rowSize);
+  let hexagons = generatePlots(rowSize*(rowSize-1));
 
   while(hexagons.length) plots2D.push(hexagons.splice(0, rowSize));
+
+  times(plots2D.length, index => {
+    times(plots2D[index].length, index2 => {
+      plots2D[index][index2].row = index;
+      plots2D[index][index2].column = index2; 
+    });
+  });
+
   return (
     <>
     <div className="App">

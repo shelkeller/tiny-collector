@@ -1,15 +1,20 @@
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles({
+
+});
 
 function PlotRow(props){
   return (
     <div className="ibws-fix">
     {
       props.plots.map((plot, i)=>{
-
         let theClass = "hexagon "+plot.content;
         return (
-          <div key={"key"+i} className={theClass}>
+          <div key={"key"+i} className={theClass} >
             <div className="hexagontent">
-              {plot.content}
+              <p>{plot.row}</p>
+              <p>{plot.column}</p>
             </div>
           </div>
         )
