@@ -4,7 +4,6 @@ import LocalFloristRounded from "@material-ui/icons/LocalFloristRounded";
 function Plot(props){
   let plot = props.plot;
   let classy = "hexagon "+plot.content;
-  console.log(plot);
   let grassOptions = ["#42796c",
 "#3a514c",
 "#185653"]

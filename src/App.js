@@ -25,7 +25,7 @@ const generatePlots = (size) => {
 }
 
 function App() {
-  const rowSize = 10;
+  const rowSize = 9;
   const plots2D = [];
   let hexagons = generatePlots(rowSize*(rowSize-1));
 
