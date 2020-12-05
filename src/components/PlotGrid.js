@@ -16,17 +16,20 @@ function Plot(props){
 "#9e7af0"]
 
   let color = grassOptions[Math.floor(Math.random() * Math.floor(3))]
-  let content = <><p>{plot.row}</p>
-  <p>{plot.column}</p></>
+  let content = <></>
   if (plot.isFlower){
     color = flowerOptions[Math.floor(Math.random() * Math.floor(7))]
     content = <LocalFloristRounded />;
   }
 
-
+  let handleClick = (id) => {
+    console.log(id);
+  }
 
   return (
-    <div key={"key"+props.key} className={classy} style={{backgroundColor: color}} >
+    <div className={classy} style={{backgroundColor: color}} onClick={()=>{
+      handleClick(plot.id);
+    }} >
       <div className="hexagontent">
         {content}
       </div>

@@ -63,7 +63,7 @@ html {
   z-index: 105;
 }
 .hexagon:active {
-  filter: hue-rotate(340deg);
+  filter: saturate(3);
   z-index: 110;
 }
 
