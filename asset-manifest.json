@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/tiny-collector/static/css/main.616102f2.chunk.css",
+    "main.css": "/tiny-collector/static/css/main.a15bd970.chunk.css",
     "main.js": "/tiny-collector/static/js/main.cff3af6f.chunk.js",
     "main.js.map": "/tiny-collector/static/js/main.cff3af6f.chunk.js.map",
     "runtime-main.js": "/tiny-collector/static/js/runtime-main.41a8a3a6.js",
@@ -10,14 +10,14 @@
     "static/js/3.f6005f1d.chunk.js": "/tiny-collector/static/js/3.f6005f1d.chunk.js",
     "static/js/3.f6005f1d.chunk.js.map": "/tiny-collector/static/js/3.f6005f1d.chunk.js.map",
     "index.html": "/tiny-collector/index.html",
-    "static/css/main.616102f2.chunk.css.map": "/tiny-collector/static/css/main.616102f2.chunk.css.map",
+    "static/css/main.a15bd970.chunk.css.map": "/tiny-collector/static/css/main.a15bd970.chunk.css.map",
     "static/js/2.68bd22b9.chunk.js.LICENSE.txt": "/tiny-collector/static/js/2.68bd22b9.chunk.js.LICENSE.txt",
     "static/media/logo.6ce24c58.svg": "/tiny-collector/static/media/logo.6ce24c58.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.41a8a3a6.js",
     "static/js/2.68bd22b9.chunk.js",
-    "static/css/main.616102f2.chunk.css",
+    "static/css/main.a15bd970.chunk.css",
     "static/js/main.cff3af6f.chunk.js"
   ]
 }
