@@ -5,20 +5,18 @@
   padding: 0;
   box-sizing: border-box;
 }
-html {
-  font-size: 75%
-}
+
 
 
 
 :root {
-  --hexWidth: 3vw;
+  --hexWidth: 4vw;
   --hexHeight: calc( var(--hexWidth)* 1.732)
 }
 
 @media only screen and (max-width: 768px) {
   :root {
-    --hexWidth: 6vw;
+    --hexWidth: 7vw;
   }
 }
 

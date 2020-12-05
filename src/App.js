@@ -4,6 +4,7 @@ import HexagonGrid from 'react-hexagon-grid';
 import times from 'lodash/times';
 import LocalFloristRounded from "@material-ui/icons/LocalFloristRounded";
 import PlotRow from './components/PlotGrid';
+import { useState } from 'react';
 
 // returns an integer between 0 and max
 function roll(max) {
@@ -28,7 +29,6 @@ function App() {
   const rowSize = 9;
   const plots2D = [];
   let hexagons = generatePlots(rowSize*(rowSize-1));
-
   while(hexagons.length) plots2D.push(hexagons.splice(0, rowSize));
 
   times(plots2D.length, index => {
@@ -37,6 +37,7 @@ function App() {
       plots2D[index][index2].column = index2;
     });
   });
+
 
   return (
     <>
