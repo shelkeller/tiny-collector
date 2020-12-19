@@ -24,9 +24,6 @@ function Plot(props){
     "#9e7af0"
   ]
 
-function getRandom(min, max) {
-  return Math.random() * (max - min) + min;
-}
   let color = grassOptions[Math.floor(Math.random() * Math.floor(3))];
   let filter = "";
   let content = <></>

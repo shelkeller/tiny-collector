@@ -5,17 +5,18 @@ import times from 'lodash/times';
 import LocalFloristRounded from "@material-ui/icons/LocalFloristRounded";
 import PlotRow from './components/PlotGrid';
 import { useState } from 'react';
+import { rollUpTo } from './utils/dice'
 
 // returns an integer between 0 and max
-function roll(max) {
-  return Math.floor(Math.random() * Math.floor(max));
-}
+// function roll(max) {
+//   return Math.floor(Math.random() * Math.floor(max));
+// }
 
 //returns a list of "plot" objects: {id, isFlower, name}
 const generatePlots = (size) => {
   let plots = [];
   times(size, id => {
-      let dice = roll(100); // roll a 100 sided die
+      let dice = rollUpTo(100); // roll a 100 sided die
       if (dice<=10){ // around a 10 percent chance of rolling a flower
         plots[id] = { id: id, isFlower: true, content: "flower"};
       } else {
