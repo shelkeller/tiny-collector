@@ -8,7 +8,6 @@ import { gameConfig } from './config/gameConfig';
 
 let flowerHues = gameConfig.accessibilityMode ? flowerColorsAccessible : flowerColors;
 
-
 //returns a 2D array "plot" objects: {id, isFlower, color, name, content, row, column}
 const generatePlots = (size) => {
   let plots = [];
