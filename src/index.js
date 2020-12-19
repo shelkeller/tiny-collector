@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import './hexagon.css';
+import './styles/index.css';
+import './styles/hexagon.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 

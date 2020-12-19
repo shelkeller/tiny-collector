@@ -1,53 +1,76 @@
-import logo from './logo.svg';
-import './App.css';
-import HexagonGrid from 'react-hexagon-grid';
+import './styles/App.css';
 import times from 'lodash/times';
-import LocalFloristRounded from "@material-ui/icons/LocalFloristRounded";
-import PlotRow from './components/PlotGrid';
+import PlotRow from './components/PlotGrid/PlotRow';
 import { useState } from 'react';
-import { rollUpTo } from './utils/dice'
+import { rollUpTo } from './utils/dice';
+import { grassColors, flowerColors, flowerColorsAccessible, colorNames } from './constants/colors';
+import { gameConfig } from './config/gameConfig';
 
-// returns an integer between 0 and max
-// function roll(max) {
-//   return Math.floor(Math.random() * Math.floor(max));
-// }
+let flowerHues = gameConfig.accessibilityMode ? flowerColorsAccessible : flowerColors;
 
-//returns a list of "plot" objects: {id, isFlower, name}
+
+//returns a 2D array "plot" objects: {id, isFlower, color, name, content, row, column}
 const generatePlots = (size) => {
   let plots = [];
+  let plots2D = [];
+
   times(size, id => {
+      let color;
       let dice = rollUpTo(100); // roll a 100 sided die
-      if (dice<=10){ // around a 10 percent chance of rolling a flower
-        plots[id] = { id: id, isFlower: true, content: "flower"};
+      if (dice<=gameConfig.fertility){ // chance of rolling a flower
+
+        var colorRoll = rollUpTo(flowerHues.length); //Select a flower hue
+        color = flowerHues[colorRoll];
+        let colorName = colorNames[colorRoll]; //Get its matching color name
+        plots[id] = {
+          id: id,
+          isFlower: true,
+          color: color,
+          name: colorName + " Flower",
+          content: "flower"
+        };
+
       } else {
-        plots[id] = {id: id, isFlower: false, content: "grass"};
+        color = grassColors[rollUpTo(grassColors.length)];
+        plots[id] = {
+          id: id,
+          isFlower: false,
+          color: color,
+          name: "Empty",
+          content: "grass"};
       }
   });
-  return plots;
+
+  //We splice it into rows, and make a 2D array of those.
+  while(plots.length) plots2D.push(plots.splice(0, gameConfig.rowSize));
+
+  // load up the plots with coordinate information.
+  // This will be used to determine neighbors later.
+  times(plots2D.length, r => {
+    times(plots2D[r].length, c => {
+      plots2D[r][c].row = r;
+      plots2D[r][c].column = c;
+    });
+  });
+
+  return plots2D;
 }
 
 function App() {
-  const rowSize = 9;
-  const plots2D = [];
-  let hexagons = generatePlots(rowSize*(rowSize-1));
-  while(hexagons.length) plots2D.push(hexagons.splice(0, rowSize));
-
-  times(plots2D.length, index => {
-    times(plots2D[index].length, index2 => {
-      plots2D[index][index2].row = index;
-      plots2D[index][index2].column = index2;
-    });
-  });
+  const rowSize = gameConfig.rowSize;
+  const title = gameConfig.title;
+  // generatePlots takes an int and returns a 1D array.
+  let plotRows = generatePlots(rowSize*(rowSize-1));
 
 
   return (
     <>
     <div className="App">
       <header className="App-header">
-      tiny collector
+      {title}
       <div className="honeycomb" style={{paddingTop: "50px"}}>
-        {plots2D.map((plots, i) => {
-          return <PlotRow plots={plots} />
+        {plotRows.map((plotRow, i) => {
+          return <PlotRow plots={plotRow} />
         })}
       </div>
       </header>
