@@ -20,6 +20,12 @@ export const flowerColors = [
   "#3b66db", //blue
   "#9e7af0" //violet
 ]
+
+/*
+taken from here:
+https://personal.sron.nl/~pault/
+*/
+
 export const flowerColorsAccessible = [
   "#e6677", //red
   "#ccbb44", //yellow

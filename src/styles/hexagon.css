@@ -1,5 +1,10 @@
 @import url(https://fonts.googleapis.com/css?family=Merriweather);
 
+/*
+I modified this hexagon grid from Graham Pyne:
+https://codepen.io/gpyne/pen/iElhp
+*/
+
 *, *::before, *::after {
   margin: 0;
   padding: 0;
@@ -7,7 +12,15 @@
 }
 
 
-
+/*
+These numbers were hardcoded before.
+I added these variables according to his specifications below
+in order to allow the grid to change size dynamically.
+I'm doing his "lazy" calculation though, and I think you can tell.
+The tiles look beautiful, but aren't spaced as perfectly as
+in his example. If I had the time to redo this I would
+generate and apply these styles dynamically in the JS.
+*/
 
 :root {
   --hexWidth: 4vw;
@@ -16,7 +29,7 @@
 
 @media only screen and (max-width: 768px) {
   :root {
-    --hexWidth: 7vw;
+    --hexWidth: 6vw;
   }
 }
 
@@ -25,7 +38,7 @@
   position: relative;
   display: inline-block;
   /* left/right margin approx. 25% of .hexagon width + spacing */
-  margin: 1px calc( var(--hexWidth)*.25);
+  margin: 1.5px calc( var(--hexWidth)*.25 + 1.5px);
   background-color: hsl(120, 75%, 75%);
   text-align: center;
 }
@@ -53,7 +66,7 @@
 }
 .hexagon:nth-child(even) {
   /* top approx. 50% of .hexagon height + spacing */
-  top: calc((var(--hexHeight)* .50));
+  top: calc((var(--hexHeight)* .50) + 1.5px);
 }
 .hexagon:hover {
   filter: drop-shadow(0 0 5px #8899CC);
