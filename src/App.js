@@ -86,17 +86,34 @@ function App() {
 
   const [plotGrid, setPlotGrid] = useState(generatePlots(rowSize*(rowSize-1)));
   const [trueTime, setTrueTime] = useState(0);
-
   const displayTime = 1+Math.floor(trueTime/3);
 
+  const findNeighbors = (x , y) => {
+    //clockwise:
+    // up, upright, downright, down, downleft, upleft
+
+
+    // if x === 0,
+  }
   const step = () => {
     setTrueTime(trueTime + 1);
-    setPlotGrid(generatePlots(rowSize*(rowSize-1)));
+
+    times(plotGrid.length, row => {
+      times(plotGrid[row].length, col=> {
+        let dice = rollUpTo(6);
+        if (dice === 6){
+          // find all empty neighbors
+          // make a flower
+          // decide whether to mutate color
+          //
+        }
+      });
+    });
   }
   let timeOfDay = "";
-  if ( trueTime % 3 === 0) { timeOfDay = <WiSunrise />; }
-  else if ( trueTime % 3 === 1 ) { timeOfDay = <WiDaySunny />; }
-  else if ( trueTime % 3 === 2 ) { timeOfDay = <WiNightAltPartlyCloudy />; }
+  if ( trueTime % 3 === 0) { timeOfDay = <WiSunrise size={40}/>; }
+  else if ( trueTime % 3 === 1 ) { timeOfDay = <WiDaySunny size={40}/>; }
+  else if ( trueTime % 3 === 2 ) { timeOfDay = <WiNightAltPartlyCloudy size={40}/>; }
 
   return (
     <>
