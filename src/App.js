@@ -32,16 +32,21 @@ const generatePlots = (size) => {
       let color;
       let dice = rollUpTo(100); // roll a 100 sided die
       if (dice<=gameConfig.fertility){ // chance of rolling a flower
+        var ageRoll = rollUpTo(2); // select age
 
-        var colorRoll = rollUpTo(flowerHues.length); //Select a flower hue
-        color = flowerHues[colorRoll];
-        let colorName = colorNames[colorRoll]; //Get its matching color name
+        var budColor = grassColors[rollUpTo(grassColors.length)];
+        var flowerColorRoll = rollUpTo(flowerHues.length);
+        var flowerColor = flowerHues[flowerColorRoll];
+        var flowerColorName = colorNames[flowerColorRoll];
+
         plots[id] = {
           id: id,
           isFlower: true,
-          color: color,
-          name: colorName + " Flower",
-          content: "flower"
+          budColor: budColor,
+          flowerColor: flowerColor,
+          flowerColorName: flowerColorName,
+          name: flowerColorName + " Flower",
+          age: ageRoll
         };
 
       } else {
@@ -108,11 +113,11 @@ function App() {
 
     let neighbors = [];
     if (x > 0)  neighbors.push({row: x-1, col: y});
-    if (x > 0 && y < gameConfig.rowSize-1) neighbors.push({row: x-1, col: y+1});
+    if (y < gameConfig.rowSize-1) neighbors.push({row: x, col: y+1});
     if (y < gameConfig.rowSize-1) neighbors.push({row: x, col: y+1});
     if (x < gameConfig.rowSize-2) neighbors.push({row: x+1, col: y});
     if (x < gameConfig.rowSize-2 && y > 0 ) neighbors.push({row: x+1, col: y-1});
-    if (x > 0 && y > 0) neighbors.push({row: x-1, col: y-1});
+    if (x > 0 && y > 0) neighbors.push({row: x-1, col: y});
 
     return neighbors;
   }
@@ -121,7 +126,7 @@ function App() {
     let neighbors = findNeighbors(x, y);
     let empties = [];
     times(neighbors.length, (i) => {
-      if (plotGrid[neighbors[i].row][neighbors[i].col].content==='grass'){
+      if (!plotGrid[neighbors[i].row][neighbors[i].col].isFlower){
         empties.push(plotGrid[neighbors[i].row][neighbors[i].col]);
       }
     });
@@ -129,36 +134,59 @@ function App() {
     return empties;
   }
 
-  const plantFlower = (x, y) =>{
-    let dice = rollUpTo(100); // roll a 100 sided die
-    var colorRoll = rollUpTo(flowerHues.length); //Select a flower hue
-    let color = flowerHues[colorRoll];
-    let colorName = colorNames[colorRoll]; //Get its matching color name
+  const plantFlower = (x, y) => {
+    var flowerColorRoll = rollUpTo(flowerHues.length);
+    let flowerColor = flowerHues[flowerColorRoll];
+    let flowerColorName = colorNames[flowerColorRoll];
+    let budColor = grassColors[rollUpTo(grassColors.length)];
     plotGrid[x][y] = {
         isFlower: true,
-        color: color,
-        name: colorName + " Flower",
+        flowerColor: flowerColor,
+        flowerColorName: flowerColorName,
+        budColor: budColor,
+        name: flowerColorName + " Flower",
         content: "flower",
         row: x,
-        col: y
+        col: y,
+        age: 0,
+        marked: true
       };
       setPlotGrid(plotGrid);
 
 }
   const step = () => {
+    // first we increment time
     setTrueTime(trueTime + 1);
 
+    //unmark everyone
     times(plotGrid.length, row => {
       times(plotGrid[row].length, col=> {
-        if (plotGrid[row][col].isFlower){
-          let empties = findEmptyNeighbors(row, col);
-          console.log(empties);
-            let pick = empties[rollUpTo(empties.length)];
-            console.log(!!pick);
-            if (pick) plantFlower(pick.row, pick.col);
-        }
+        plotGrid[row][col].marked = false;
       });
     });
+
+    //then we let our adults breed
+    times(plotGrid.length, row => {
+      times(plotGrid[row].length, col=> {
+        if (!plotGrid[row][col].marked){
+          plotGrid[row][col].marked = true;
+          if (plotGrid[row][col].age < 2) {
+            plotGrid[row][col].age ++;
+            //ensure we don't age this spot again
+          };
+
+          if (plotGrid[row][col].isFlower && plotGrid[row][col].age===2){
+            let empties = findEmptyNeighbors(row, col);
+              let pick = empties[rollUpTo(empties.length)];
+              if (pick) plantFlower(pick.row, pick.col);
+          }
+        }
+
+      });
+    });
+
+
+
   }
 
   let timeOfDay = "";

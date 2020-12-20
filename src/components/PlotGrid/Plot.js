@@ -1,14 +1,26 @@
 import LocalFlorist from "@material-ui/icons/LocalFlorist";
+import SpaIcon from '@material-ui/icons/Spa';
 import Tooltip from '@material-ui/core/Tooltip';
 
 const Plot = props => {
   let plot = props.plot;
   let handleClick = props.handleClick;
   let classy = "hexagon "+plot.content;
-  let color = plot.color;
   let content = "";
+  let color = ""
 
-  if (plot.isFlower) content = <LocalFlorist />;
+  if (plot.isFlower && plot.age >=1 ) {
+    color = plot.flowerColor;
+    content = <LocalFlorist />
+  };
+  if (plot.isFlower && plot.age < 1 ){
+    color = plot.budColor;
+    content = <SpaIcon />;
+  }
+
+  if (!plot.isFlower){
+    color = plot.color;
+  }
 
   let tooltipContent = <p style={{fontSize: 14}}>{plot.row}, {plot.col}</p>
   let plotStyle = { backgroundColor: color };
