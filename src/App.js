@@ -111,9 +111,9 @@ function App() {
     });
   }
   let timeOfDay = "";
-  if ( trueTime % 3 === 0) { timeOfDay = <WiSunrise size={40}/>; }
-  else if ( trueTime % 3 === 1 ) { timeOfDay = <WiDaySunny size={40}/>; }
-  else if ( trueTime % 3 === 2 ) { timeOfDay = <WiNightAltPartlyCloudy size={40}/>; }
+  if ( trueTime % 3 === 0) { timeOfDay = <WiSunrise size={40} style={{backgroundColor: '#d47986', padding: '3 2 0 2', borderRadius: '10px', border: '2px solid white'}}/>; }
+  else if ( trueTime % 3 === 1 ) { timeOfDay = <WiDaySunny size={40} style={{backgroundColor: '#dbbd72', padding: '3 2 0 2', borderRadius: '10px', border: '2px solid white'}}/>; }
+  else if ( trueTime % 3 === 2 ) { timeOfDay = <WiNightAltPartlyCloudy size={40} style={{backgroundColor: '#739cde', padding: '3 2 0 2', borderRadius: '10px', border: '2px solid white'}}/>; }
 
   return (
     <>
