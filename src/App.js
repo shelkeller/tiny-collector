@@ -170,7 +170,7 @@ function App() {
       times(plotGrid[row].length, col=> {
         if (!plotGrid[row][col].marked){
           plotGrid[row][col].marked = true;
-          if (plotGrid[row][col].age < 2) {
+          if (plotGrid[row][col].age < 2 && (trueTime % 3 === 2 || trueTime % 3 === 0)) {
             plotGrid[row][col].age ++;
             //ensure we don't age this spot again
           };
