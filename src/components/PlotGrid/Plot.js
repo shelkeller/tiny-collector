@@ -1,24 +1,14 @@
-import LocalFloristRounded from "@material-ui/icons/LocalFloristRounded";
+import LocalFlorist from "@material-ui/icons/LocalFlorist";
 import Tooltip from '@material-ui/core/Tooltip';
 
-const Plot = (props) => {
+const Plot = props => {
   let plot = props.plot;
-  let plots = props.plots;
-  let setPlots = props.setPlots;
+  let handleClick = props.handleClick;
   let classy = "hexagon "+plot.content;
-
-
   let color = plot.color;
   let content = "";
 
-  if (plot.isFlower) content = <LocalFloristRounded />;
-
-
-  let handleClick = (id) => {
-    let thePlot = plots.filter((plot) => {return plot.id === id})[0];
-    console.log(thePlot);
-  }
-
+  if (plot.isFlower) content = <LocalFlorist />;
 
   let tooltipContent = <p style={{fontSize: 14}}>{plot.name}</p>
   let plotStyle = { backgroundColor: color };

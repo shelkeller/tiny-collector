@@ -5,6 +5,21 @@ import { useState } from 'react';
 import { rollUpTo } from './utils/dice';
 import { grassColors, flowerColors, flowerColorsAccessible, colorNames } from './constants/colors';
 import { gameConfig } from './config/gameConfig';
+import { WiDaySunny, WiSunrise, WiNightAltPartlyCloudy } from "weather-icons-react";
+
+
+import {
+  createMuiTheme,
+  createStyles,
+  withStyles,
+  makeStyles,
+  Theme,
+  ThemeProvider,
+} from '@material-ui/core/styles';
+import { green, purple } from '@material-ui/core/colors';
+import Button from '@material-ui/core/Button';
+import UpdateIcon from '@material-ui/icons/Update';
+
 
 let flowerHues = gameConfig.accessibilityMode ? flowerColorsAccessible : flowerColors;
 
@@ -36,7 +51,8 @@ const generatePlots = (size) => {
           isFlower: false,
           color: color,
           name: "Empty",
-          content: "grass"};
+          content: "grass"
+        };
       }
   });
 
@@ -55,25 +71,65 @@ const generatePlots = (size) => {
   return plots2D;
 }
 
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#185653"
+    },
+  },
+});
+
+
 function App() {
   const rowSize = gameConfig.rowSize;
   const title = gameConfig.title;
-  // generatePlots takes an int and returns a 1D array.
-  let plotRows = generatePlots(rowSize*(rowSize-1));
 
+  const [plotGrid, setPlotGrid] = useState(generatePlots(rowSize*(rowSize-1)));
+  const [trueTime, setTrueTime] = useState(0);
+
+  const displayTime = 1+Math.floor(trueTime/3);
+
+  const step = () => {
+    setTrueTime(trueTime + 1);
+    setPlotGrid(generatePlots(rowSize*(rowSize-1)));
+  }
+  let timeOfDay = "";
+  if ( trueTime % 3 === 0) { timeOfDay = <WiSunrise />; }
+  else if ( trueTime % 3 === 1 ) { timeOfDay = <WiDaySunny />; }
+  else if ( trueTime % 3 === 2 ) { timeOfDay = <WiNightAltPartlyCloudy />; }
 
   return (
     <>
+    <ThemeProvider theme={theme}>
     <div className="App">
       <header className="App-header">
       {title}
-      <div className="honeycomb" style={{paddingTop: "50px"}}>
-        {plotRows.map((plotRow, i) => {
-          return <PlotRow plots={plotRow} />
+       <Button variant="contained" color="primary" onClick={() =>{
+           step();
+         }} style={{
+           margin: "1em"
+         }}>
+         <UpdateIcon />
+       </Button>
+       <p>{timeOfDay}</p>
+       <p> {'Day '+displayTime} </p>
+
+     {/*
+     I get that it would probably be a good idea to
+     have another component called PlotGrid or something
+     but really all it would do is wrap this set of PlotRows
+     in a div with this className. and that just isn't enough
+     stuff to justify a whole file or even its own variable
+     I think
+     */}
+      <div className="honeycomb" style={{paddingTop: "2em"}}>
+        {plotGrid.map((plotRow, i) => {
+          return <PlotRow plots={plotRow} gridState={plotGrid} gridStateSetter={setPlotGrid} />
         })}
       </div>
       </header>
     </div>
+    </ThemeProvider>
     </>
   );
 }
