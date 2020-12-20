@@ -64,7 +64,7 @@ const generatePlots = (size) => {
   times(plots2D.length, r => {
     times(plots2D[r].length, c => {
       plots2D[r][c].row = r;
-      plots2D[r][c].column = c;
+      plots2D[r][c].col = c;
     });
   });
 
@@ -89,34 +89,85 @@ function App() {
   const displayTime = 1+Math.floor(trueTime/3);
 
   const findNeighbors = (x , y) => {
-    //clockwise:
-    // up, upright, downright, down, downleft, upleft
+    /*
+    clockwise:
+    up: x-1, y
+    upright: x-1, y+1
+    downright: x, y+1
+    down: x+1, y
+    downleft: x+1, y-1
+    upleft: x-1, y-1
 
+    if x>0, get up
+    if x>0 && y<gameConfig.rowSize, get upright
+    if y<gameConfig.rowSize, get downRight
+    if x<gameConfig.rowSize-1, get down
+    if x<gameConfig.rowSize-1 && y>0, get downleft
+    if x>0 and y>0, get upleft
+    */
 
-    // if x === 0,
+    let neighbors = [];
+    if (x > 0)  neighbors.push({row: x-1, col: y});
+    if (x > 0 && y < gameConfig.rowSize-1) neighbors.push({row: x-1, col: y+1});
+    if (y < gameConfig.rowSize-1) neighbors.push({row: x, col: y+1});
+    if (x < gameConfig.rowSize-2) neighbors.push({row: x+1, col: y});
+    if (x < gameConfig.rowSize-2 && y > 0 ) neighbors.push({row: x+1, col: y-1});
+    if (x > 0 && y > 0) neighbors.push({row: x-1, col: y-1});
+
+    return neighbors;
   }
+
+  let findEmptyNeighbors = (x , y) =>{
+    let neighbors = findNeighbors(x, y);
+    let empties = [];
+    times(neighbors.length, (i) => {
+      if (plotGrid[neighbors[i].row][neighbors[i].col].content==='grass'){
+        empties.push(plotGrid[neighbors[i].row][neighbors[i].col]);
+      }
+    });
+
+    return empties;
+  }
+
+  const plantFlower = (x, y) =>{
+    let dice = rollUpTo(100); // roll a 100 sided die
+    var colorRoll = rollUpTo(flowerHues.length); //Select a flower hue
+    let color = flowerHues[colorRoll];
+    let colorName = colorNames[colorRoll]; //Get its matching color name
+    plotGrid[x][y] = {
+        isFlower: true,
+        color: color,
+        name: colorName + " Flower",
+        content: "flower",
+        row: x,
+        col: y
+      };
+      setPlotGrid(plotGrid);
+
+}
   const step = () => {
     setTrueTime(trueTime + 1);
 
     times(plotGrid.length, row => {
       times(plotGrid[row].length, col=> {
-        let dice = rollUpTo(6);
-        if (dice === 6){
-          // find all empty neighbors
-          // make a flower
-          // decide whether to mutate color
-          //
+        if (plotGrid[row][col].isFlower){
+          let empties = findEmptyNeighbors(row, col);
+          console.log(empties);
+            let pick = empties[rollUpTo(empties.length)];
+            console.log(!!pick);
+            if (pick) plantFlower(pick.row, pick.col);
         }
       });
     });
   }
+
   let timeOfDay = "";
+
   if ( trueTime % 3 === 0) { timeOfDay = <WiSunrise size={40} style={{backgroundColor: '#d47986', padding: '3 2 0 2', borderRadius: '10px', border: '2px solid white'}}/>; }
   else if ( trueTime % 3 === 1 ) { timeOfDay = <WiDaySunny size={40} style={{backgroundColor: '#dbbd72', padding: '3 2 0 2', borderRadius: '10px', border: '2px solid white'}}/>; }
   else if ( trueTime % 3 === 2 ) { timeOfDay = <WiNightAltPartlyCloudy size={40} style={{backgroundColor: '#739cde', padding: '3 2 0 2', borderRadius: '10px', border: '2px solid white'}}/>; }
 
   return (
-    <>
     <ThemeProvider theme={theme}>
     <div className="App">
       <header className="App-header">
@@ -147,7 +198,6 @@ function App() {
       </header>
     </div>
     </ThemeProvider>
-    </>
   );
 }
 

@@ -10,7 +10,7 @@ const Plot = props => {
 
   if (plot.isFlower) content = <LocalFlorist />;
 
-  let tooltipContent = <p style={{fontSize: 14}}>{plot.name}</p>
+  let tooltipContent = <p style={{fontSize: 14}}>{plot.row}, {plot.col}</p>
   let plotStyle = { backgroundColor: color };
   return (
     <Tooltip title={tooltipContent} arrow>
