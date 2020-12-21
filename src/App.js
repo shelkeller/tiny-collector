@@ -6,6 +6,15 @@ import { rollUpTo } from './utils/dice';
 import { grassColors, flowerColors, flowerColorsAccessible, colorNames } from './constants/colors';
 import { gameConfig } from './config/gameConfig';
 import { WiDaySunny, WiSunrise, WiNightAltPartlyCloudy } from "weather-icons-react";
+import LocalFlorist from "@material-ui/icons/LocalFlorist";
+import Badge from '@material-ui/core/Badge';
+
+import Fab from '@material-ui/core/Fab';
+import Paper from '@material-ui/core/Paper';
+import Avatar from '@material-ui/core/Avatar';
+import Grid from '@material-ui/core/Grid';
+
+import Container from '@material-ui/core/Container';
 
 
 import {
@@ -85,6 +94,22 @@ const theme = createMuiTheme({
 });
 
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1
+  },
+  paper: {
+    height: 50,
+    width: 50
+  },
+  control: {
+    padding: theme.spacing(2)
+  }
+}));
+
+let spacing = 1;
+
+
 function App() {
   const rowSize = gameConfig.rowSize;
   const title = gameConfig.title;
@@ -94,7 +119,9 @@ function App() {
   const displayTime = 1+Math.floor(trueTime/3);
 
   const findNeighbors = (x , y) => {
+
     /*
+    neighbors will depend on whether y is even or odd
     clockwise:
     up: x-1, y
     upright: x-1, y+1
@@ -189,26 +216,54 @@ function App() {
 
   }
 
+  const classes = useStyles();
+
+
   let timeOfDay = "";
 
+  // TODO: this is hideous. Make a component for this weather icon.
   if ( trueTime % 3 === 0) { timeOfDay = <WiSunrise size={40} style={{backgroundColor: '#d47986', padding: '3 2 0 2', borderRadius: '10px', border: '2px solid white'}}/>; }
   else if ( trueTime % 3 === 1 ) { timeOfDay = <WiDaySunny size={40} style={{backgroundColor: '#dbbd72', padding: '3 2 0 2', borderRadius: '10px', border: '2px solid white'}}/>; }
   else if ( trueTime % 3 === 2 ) { timeOfDay = <WiNightAltPartlyCloudy size={40} style={{backgroundColor: '#739cde', padding: '3 2 0 2', borderRadius: '10px', border: '2px solid white'}}/>; }
 
+
+    let badgeStyle =  {
+       right: -3,
+       top: 13,
+       border: `2px solid ${theme.palette.background.paper}`,
+       padding: '0 4px',
+     };
   return (
     <ThemeProvider theme={theme}>
     <div className="App">
       <header className="App-header">
       {title}
-       <Button variant="contained" color="primary" onClick={() =>{
+       <Fab variant="extended" color="primary" onClick={() =>{
            step();
          }} style={{
            margin: "1em"
          }}>
          <UpdateIcon />
-       </Button>
+       </Fab>
        <p>{timeOfDay}</p>
        <p> {'Day '+displayTime} </p>
+       <Container maxWidth="sm" style={{ paddingTop: "1em"}}>
+         <Grid container className={classes.root} spacing={2}>
+  <Grid item xs={12}>
+    <Grid container justify="center" spacing={spacing}>
+      {[0, 1, 2, 3, 4, 5 ].map((value) => (
+        <Grid key={value} item>
+            <Avatar component={Paper} style={{backgroundColor: flowerHues[value], color: "white"}}elevation={1} variant="rounded">
+                <LocalFlorist />
+              </Avatar>
+        </Grid>
+      ))}
+    </Grid>
+  </Grid>
+</Grid>
+       </Container>
+
+
 
      {/*
      I get that it would probably be a good idea to
