@@ -7,21 +7,13 @@ import { grassColors, flowerColors, flowerColorsAccessible, colorNames } from '.
 import { gameConfig } from './config/gameConfig';
 import { WiDaySunny, WiSunrise, WiNightAltPartlyCloudy } from "weather-icons-react";
 import LocalFlorist from "@material-ui/icons/LocalFlorist";
-import Badge from '@material-ui/core/Badge';
-
 import Fab from '@material-ui/core/Fab';
 import Paper from '@material-ui/core/Paper';
-import Avatar from '@material-ui/core/Avatar';
-import Grid from '@material-ui/core/Grid';
-
-import Container from '@material-ui/core/Container';
+import Inventory from './components/Inventory';
 
 
 import {
   createMuiTheme,
-  createStyles,
-  withStyles,
-  makeStyles,
   Theme,
   ThemeProvider,
 } from '@material-ui/core/styles';
@@ -94,20 +86,6 @@ const theme = createMuiTheme({
 });
 
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1
-  },
-  paper: {
-    height: 50,
-    width: 50
-  },
-  control: {
-    padding: theme.spacing(2)
-  }
-}));
-
-let spacing = 1;
 
 
 function App() {
@@ -116,6 +94,19 @@ function App() {
 
   const [plotGrid, setPlotGrid] = useState(generatePlots(rowSize*(rowSize-1)));
   const [trueTime, setTrueTime] = useState(0);
+  const [inventory, setInventory] = useState([
+    {
+      flowerColor: 0,
+      colorName: colorNames[0],
+      quantity: 3
+    },
+    {
+      flowerColor: 4,
+      colorName: colorNames[4],
+      quantity: 1
+    }
+]);
+
   const displayTime = 1+Math.floor(trueTime/3);
 
   const findNeighbors = (x , y) => {
@@ -149,7 +140,7 @@ function App() {
     return neighbors;
   }
 
-  let findEmptyNeighbors = (x , y) =>{
+  const findEmptyNeighbors = (x , y) =>{
     let neighbors = findNeighbors(x, y);
     let empties = [];
     times(neighbors.length, (i) => {
@@ -180,7 +171,8 @@ function App() {
       };
       setPlotGrid(plotGrid);
 
-}
+    }
+
   const step = () => {
     // first we increment time
     setTrueTime(trueTime + 1);
@@ -216,9 +208,6 @@ function App() {
 
   }
 
-  const classes = useStyles();
-
-
   let timeOfDay = "";
 
   // TODO: this is hideous. Make a component for this weather icon.
@@ -227,12 +216,6 @@ function App() {
   else if ( trueTime % 3 === 2 ) { timeOfDay = <WiNightAltPartlyCloudy size={40} style={{backgroundColor: '#739cde', padding: '3 2 0 2', borderRadius: '10px', border: '2px solid white'}}/>; }
 
 
-    let badgeStyle =  {
-       right: -3,
-       top: 13,
-       border: `2px solid ${theme.palette.background.paper}`,
-       padding: '0 4px',
-     };
   return (
     <ThemeProvider theme={theme}>
     <div className="App">
@@ -247,23 +230,7 @@ function App() {
        </Fab>
        <p>{timeOfDay}</p>
        <p> {'Day '+displayTime} </p>
-       <Container maxWidth="sm" style={{ paddingTop: "1em"}}>
-         <Grid container className={classes.root} spacing={2}>
-  <Grid item xs={12}>
-    <Grid container justify="center" spacing={spacing}>
-      {[0, 1, 2, 3, 4, 5 ].map((value) => (
-        <Grid key={value} item>
-            <Avatar component={Paper} style={{backgroundColor: flowerHues[value], color: "white"}}elevation={1} variant="rounded">
-                <LocalFlorist />
-              </Avatar>
-        </Grid>
-      ))}
-    </Grid>
-  </Grid>
-</Grid>
-       </Container>
-
-
+      <Inventory flowerHues={flowerHues} items={inventory} setItems={setInventory}/>
 
      {/*
      I get that it would probably be a good idea to
