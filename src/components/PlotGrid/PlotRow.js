@@ -1,7 +1,6 @@
-import { useState } from "react";
 import Plot from "./Plot";
 import { rollUpTo } from './../../utils/dice';
-import { grassColors, flowerColors, flowerColorsAccessible, colorNames } from './../../constants/colors';
+import { grassColors } from './../../constants/colors';
 
 
 const PlotRow = props => {

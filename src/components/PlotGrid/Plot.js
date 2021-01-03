@@ -1,10 +1,7 @@
 import LocalFlorist from "@material-ui/icons/LocalFlorist";
 import SpaIcon from '@material-ui/icons/Spa';
-import CancelIcon from '@material-ui/icons/Cancel';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import Tooltip from '@material-ui/core/Tooltip';
 import { useState } from "react";
-import { makeStyles } from '@material-ui/core/styles';
 
 import OptionsDialog from "./../OptionsDialog";
 

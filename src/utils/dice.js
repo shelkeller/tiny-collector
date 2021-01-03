@@ -6,9 +6,6 @@ export const rollUpTo = (max) => {
   // Zero inclusive - max of 6 returns an integer 0-5
   return Math.floor(Math.random() * Math.floor(max));
 }
-export const getRandomGrassHue = () => {
-  // returns a color from the appropriate grass array
-}
 
 export const generateDeadPlot = ({x=-1, y=-1, colorID, id=-1}) =>{
   if (!colorID) colorID = rollUpTo(grassColors.length);

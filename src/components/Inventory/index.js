@@ -7,21 +7,10 @@ import Badge from '@material-ui/core/Badge';
 
 import { makeStyles, createMuiTheme, withStyles } from '@material-ui/core/styles';
 
-
   const Inventory = ( data ) =>{
-
     let { flowerHues, items, setItems } = data;
 
-     const theme = createMuiTheme({
-       palette: {
-         primary: {
-           main: "#185653"
-         },
-       },
-     });
-
-     console.log(items);
-     const useStyles = makeStyles((theme) => ({
+    const useStyles = makeStyles((theme) => ({
        root: {
          flexGrow: 1
        },
@@ -32,13 +21,13 @@ import { makeStyles, createMuiTheme, withStyles } from '@material-ui/core/styles
      }));
 
      const StyledBadge = withStyles((theme) => ({
-   badge: {
-     top: 35,
-     right: 5,
-     border: `2px solid ${theme.palette.background.paper}`,
-     padding: '0 4px',
-   },
- }))(Badge);
+         badge: {
+           top: 35,
+           right: 5,
+           border: `2px solid ${theme.palette.background.paper}`,
+           padding: '0 4px',
+         },
+       }))(Badge);
 
     const classes = useStyles();
 

@@ -5,20 +5,15 @@ import Inventory from './components/Inventory';
 
 import { useState } from 'react';
 import { rollUpTo, generateFlower, generateDeadPlot } from './utils/dice';
-import { grassColors, flowerColors, flowerColorsAccessible, colorNames } from './constants/colors';
+import {flowerColors, flowerColorsAccessible } from './constants/colors';
 import { gameConfig } from './config/gameConfig';
 import { WiDaySunny, WiSunrise, WiNightAltPartlyCloudy } from "weather-icons-react";
-import LocalFlorist from "@material-ui/icons/LocalFlorist";
 import Fab from '@material-ui/core/Fab';
-import Paper from '@material-ui/core/Paper';
 
 import {
   createMuiTheme,
-  Theme,
   ThemeProvider,
 } from '@material-ui/core/styles';
-import { green, purple } from '@material-ui/core/colors';
-import Button from '@material-ui/core/Button';
 import UpdateIcon from '@material-ui/icons/Update';
 
 
@@ -30,21 +25,12 @@ const generatePlots = (size) => {
   let plots2D = [];
 
   times(size, id => {
-      let color;
       let dice = rollUpTo(100); // roll a 100 sided die
       if (dice<=gameConfig.fertility){ // chance of rolling a flower
         var ageRoll = rollUpTo(2); // select age
         plots[id] = generateFlower({age: ageRoll, id: id});
       } else {
         plots[id] = generateDeadPlot({id: id})
-        // color = grassColors[rollUpTo(grassColors.length)];
-        // plots[id] = {
-        //   id: id,
-        //   isFlower: false,
-        //   color: color,
-        //   name: "Empty",
-        //   content: "grass"
-        // };
       }
   });
 
@@ -71,9 +57,6 @@ const theme = createMuiTheme({
   },
 });
 
-
-
-
 function App() {
   const rowSize = gameConfig.rowSize;
   const title = gameConfig.title;
@@ -82,6 +65,8 @@ function App() {
   const [trueTime, setTrueTime] = useState(0);
   const [inventory, setInventory] = useState([]);
 
+  // Days are divided into 3 sections. "trueTime" will always reflect exactly
+  // how many time units have passed; displayTime shows what day we are on.
   const displayTime = 1+Math.floor(trueTime/3);
 
   const findNeighbors = (x , y) => {
@@ -123,46 +108,46 @@ function App() {
         empties.push(plotGrid[neighbors[i].row][neighbors[i].col]);
       }
     });
-
     return empties;
   }
 
-
   const plantFlower = (x, y) => {
       let id = plotGrid[x][y].id;
-      plotGrid[x][y] = generateFlower({x, y, id});
+      plotGrid[x][y] = generateFlower({x, y, id, age:0});
       setPlotGrid([...plotGrid]);
-    }
+  }
 
-    const killFlower = (x, y) => {
+  const killFlower = (x, y) => {
       let id = plotGrid[x][y].id;
       plotGrid[x][y] = generateDeadPlot({x, y, id})
       setPlotGrid([...plotGrid]);
-    }
+  }
 
+
+// This is the heaviest function in the game. It represents the procession
+// of a unit of time.
   const step = () => {
     // first we increment time
     setTrueTime(trueTime + 1);
 
-    //unmark everyone
+    //unmark everyone just in case
     times(plotGrid.length, row => {
       times(plotGrid[row].length, col=> {
         plotGrid[row][col].marked = false;
       });
     });
 
-    //We don't want to kill anyone till the end, but we also don't want
+    // We don't want to kill anyone till the end, but we also don't want
     // to loop through the grid more than once, so we'll keep a
     // death list that we'll revisit once everyone gets a chance to breed.
 
-    let deathList = [];
+    const deathList = [];
 
     //then we let our healthy adults breed
     times(plotGrid.length, row => {
       times(plotGrid[row].length, col=> {
         if (!plotGrid[row][col].marked){
           plotGrid[row][col].marked = true;
-
 
           //only age buds at the right time of day.
           if (plotGrid[row][col].age < 2 && (trueTime % 3 === 2 || trueTime % 3 === 0)) {
@@ -175,8 +160,8 @@ function App() {
               let pick = empties[rollUpTo(empties.length)];
               if (pick) plantFlower(pick.row, pick.col);
             } else {
-              //Overpopulation - roll to mark flower for death
-              let roll = rollUpTo(3);
+              //Overpopulation - roll to mark flower for death. Sorry dude
+              let roll = rollUpTo(4);
               if (!roll) deathList.push({row, col});
             }
           }
@@ -186,8 +171,17 @@ function App() {
     });
 
     //Everybody who is going to breed has now bred.
+    //We kill at the end because if we killed in the first loop,
+    //breeding adults could claim the empty slot before the next day begins.
+
     times(deathList.length, i => {
-      killFlower(deathList[i].row, deathList[i].col);
+      //at this point we only want to kill flowers who are STILL
+      //under the conditions of overpopulation;
+      //the issue may have been resolve by a neighbor's death so let's check again
+      let empties = findEmptyNeighbors(deathList[i].row, deathList[i].col);
+      if (!empties.length) {
+        killFlower(deathList[i].row, deathList[i].col);
+      }
     });
 
 
