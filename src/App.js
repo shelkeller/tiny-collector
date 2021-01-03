@@ -159,6 +159,7 @@ function App() {
             if (empties.length){
               let pick = empties[rollUpTo(empties.length)];
               if (pick) plantFlower(pick.row, pick.col);
+              plotGrid[pick.row][pick.col].marked = true;
             } else {
               //Overpopulation - roll to mark flower for death. Sorry dude
               let roll = rollUpTo(4);
