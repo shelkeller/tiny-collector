@@ -1,6 +1,8 @@
 import './styles/App.css';
 import times from 'lodash/times';
 import PlotRow from './components/PlotGrid/PlotRow';
+import Inventory from './components/Inventory';
+
 import { useState } from 'react';
 import { rollUpTo } from './utils/dice';
 import { grassColors, flowerColors, flowerColorsAccessible, colorNames } from './constants/colors';
@@ -9,8 +11,6 @@ import { WiDaySunny, WiSunrise, WiNightAltPartlyCloudy } from "weather-icons-rea
 import LocalFlorist from "@material-ui/icons/LocalFlorist";
 import Fab from '@material-ui/core/Fab';
 import Paper from '@material-ui/core/Paper';
-import Inventory from './components/Inventory';
-
 
 import {
   createMuiTheme,
@@ -45,6 +45,7 @@ const generatePlots = (size) => {
           isFlower: true,
           budColor: budColor,
           flowerColor: flowerColor,
+          flowerColorId: flowerColorRoll,
           flowerColorName: flowerColorName,
           name: flowerColorName + " Flower",
           age: ageRoll
@@ -94,18 +95,7 @@ function App() {
 
   const [plotGrid, setPlotGrid] = useState(generatePlots(rowSize*(rowSize-1)));
   const [trueTime, setTrueTime] = useState(0);
-  const [inventory, setInventory] = useState([
-    {
-      flowerColor: 0,
-      colorName: colorNames[0],
-      quantity: 3
-    },
-    {
-      flowerColor: 4,
-      colorName: colorNames[4],
-      quantity: 1
-    }
-]);
+  const [inventory, setInventory] = useState([]);
 
   const displayTime = 1+Math.floor(trueTime/3);
 
@@ -161,6 +151,7 @@ function App() {
         isFlower: true,
         flowerColor: flowerColor,
         flowerColorName: flowerColorName,
+        flowerColorId: flowerColorRoll,
         budColor: budColor,
         name: flowerColorName + " Flower",
         content: "flower",
@@ -169,7 +160,7 @@ function App() {
         age: 0,
         marked: true
       };
-      setPlotGrid(plotGrid);
+      setPlotGrid([...plotGrid]);
 
     }
 
@@ -215,7 +206,8 @@ function App() {
   else if ( trueTime % 3 === 1 ) { timeOfDay = <WiDaySunny size={40} style={{backgroundColor: '#dbbd72', padding: '3 2 0 2', borderRadius: '10px', border: '2px solid white'}}/>; }
   else if ( trueTime % 3 === 2 ) { timeOfDay = <WiNightAltPartlyCloudy size={40} style={{backgroundColor: '#739cde', padding: '3 2 0 2', borderRadius: '10px', border: '2px solid white'}}/>; }
 
-
+console.log("Rendering app.");
+console.log(plotGrid);
   return (
     <ThemeProvider theme={theme}>
     <div className="App">
@@ -242,7 +234,11 @@ function App() {
      */}
       <div className="honeycomb" style={{paddingTop: "2em"}}>
         {plotGrid.map((plotRow, i) => {
-          return <PlotRow plots={plotRow} gridState={plotGrid} gridStateSetter={setPlotGrid} />
+          return <PlotRow
+            plots={plotRow}
+            gridState={plotGrid} gridStateSetter={setPlotGrid}
+            inventoryState={inventory} inventoryStateSetter={setInventory}
+/>
         })}
       </div>
       </header>

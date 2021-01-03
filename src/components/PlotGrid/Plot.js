@@ -11,8 +11,7 @@ import OptionsDialog from "./../OptionsDialog";
 
 
 const Plot = props => {
-  let plot = props.plot;
-  let handleClick = props.handleClick;
+  let { plot, handleClick, performGather } = props;
   let classy = "hexagon "+plot.content;
   let content = "";
   let color = ""
@@ -39,17 +38,17 @@ const Plot = props => {
   const [selectedValue, setSelectedValue] = useState("delete");
 
 
-const onClose = (value) => {
+const onClose = (selectedAction, plot) => {
   setOpen(false);
-  setSelectedValue(value);
+  setSelectedValue(selectedAction);
+  if (selectedAction==="gather") performGather(plot);
 };
 
   return (
     <>
     <Tooltip title={tooltipContent} arrow>
     <div className={classy} style={plotStyle} onClick={()=>{
-      handleClick(plot.id);
-      setOpen(true);
+        if (plot.isFlower && plot.age >=1) performGather(plot)
     }} >
       <div className="hexagontent">
         {content}
@@ -57,7 +56,7 @@ const onClose = (value) => {
     </div>
     </Tooltip>
     { plot.isFlower && plot.age &&
-      <OptionsDialog onClose={onClose} title={plotTitle} open={open} selectedValue={selectedValue} />
+      <OptionsDialog onClose={onClose} title={plotTitle} open={open} selectedValue={selectedValue} selectedPlot={plot} />
     }
 
       </>

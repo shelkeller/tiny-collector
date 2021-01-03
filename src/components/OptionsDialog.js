@@ -32,7 +32,7 @@ const useStyles = makeStyles({
 
 const OptionsDialog = props => {
 
-  let { onClose, title, selectedValue, open } = props;
+  let { onClose, title, selectedValue, selectedPlot, open } = props;
 
 
   const handleClose = () => {
@@ -40,8 +40,7 @@ const OptionsDialog = props => {
   };
 
   const handleListItemClick = (value) => {
-    console.log(value);
-    onClose(value);
+    onClose(value, selectedPlot);
   };
 
   let classes = useStyles();
