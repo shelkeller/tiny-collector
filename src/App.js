@@ -100,7 +100,7 @@ function App() {
   const displayTime = 1+Math.floor(trueTime/3);
 
   const findNeighbors = (x , y) => {
-
+    //TODO: This is broken. There's a different formula for even and odd rows.
     /*
     neighbors will depend on whether y is even or odd
     clockwise:
@@ -142,6 +142,7 @@ function App() {
     return empties;
   }
 
+
   const plantFlower = (x, y) => {
     var flowerColorRoll = rollUpTo(flowerHues.length);
     let flowerColor = flowerHues[flowerColorRoll];
@@ -164,6 +165,21 @@ function App() {
 
     }
 
+    const killFlower = (x, y) => {
+      let color = grassColors[rollUpTo(grassColors.length)];
+      let id = plotGrid[x][y].id;
+      plotGrid[x][y] = {
+        id: id,
+        isFlower: false,
+        color: color,
+        name: "Empty",
+        content: "grass",
+        row: x,
+        col: y
+      };
+      setPlotGrid([...plotGrid]);
+    }
+
   const step = () => {
     // first we increment time
     setTrueTime(trueTime + 1);
@@ -180,15 +196,24 @@ function App() {
       times(plotGrid[row].length, col=> {
         if (!plotGrid[row][col].marked){
           plotGrid[row][col].marked = true;
+
+
+
+          //only age buds at the right time of day.
           if (plotGrid[row][col].age < 2 && (trueTime % 3 === 2 || trueTime % 3 === 0)) {
             plotGrid[row][col].age ++;
-            //ensure we don't age this spot again
           };
 
           if (plotGrid[row][col].isFlower && plotGrid[row][col].age===2){
             let empties = findEmptyNeighbors(row, col);
+            if (empties.length){
               let pick = empties[rollUpTo(empties.length)];
               if (pick) plantFlower(pick.row, pick.col);
+            } else {
+              //Overpopulation
+              let roll = rollUpTo(3);
+              if (roll===2) killFlower(row, col);
+            }
           }
         }
 
