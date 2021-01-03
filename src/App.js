@@ -4,7 +4,7 @@ import PlotRow from './components/PlotGrid/PlotRow';
 import Inventory from './components/Inventory';
 
 import { useState } from 'react';
-import { rollUpTo } from './utils/dice';
+import { rollUpTo, generateFlower, generateDeadPlot } from './utils/dice';
 import { grassColors, flowerColors, flowerColorsAccessible, colorNames } from './constants/colors';
 import { gameConfig } from './config/gameConfig';
 import { WiDaySunny, WiSunrise, WiNightAltPartlyCloudy } from "weather-icons-react";
@@ -34,32 +34,17 @@ const generatePlots = (size) => {
       let dice = rollUpTo(100); // roll a 100 sided die
       if (dice<=gameConfig.fertility){ // chance of rolling a flower
         var ageRoll = rollUpTo(2); // select age
-
-        var budColor = grassColors[rollUpTo(grassColors.length)];
-        var flowerColorRoll = rollUpTo(flowerHues.length);
-        var flowerColor = flowerHues[flowerColorRoll];
-        var flowerColorName = colorNames[flowerColorRoll];
-
-        plots[id] = {
-          id: id,
-          isFlower: true,
-          budColor: budColor,
-          flowerColor: flowerColor,
-          flowerColorId: flowerColorRoll,
-          flowerColorName: flowerColorName,
-          name: flowerColorName + " Flower",
-          age: ageRoll
-        };
-
+        plots[id] = generateFlower({age: ageRoll, id: id});
       } else {
-        color = grassColors[rollUpTo(grassColors.length)];
-        plots[id] = {
-          id: id,
-          isFlower: false,
-          color: color,
-          name: "Empty",
-          content: "grass"
-        };
+        plots[id] = generateDeadPlot({id: id})
+        // color = grassColors[rollUpTo(grassColors.length)];
+        // plots[id] = {
+        //   id: id,
+        //   isFlower: false,
+        //   color: color,
+        //   name: "Empty",
+        //   content: "grass"
+        // };
       }
   });
 
@@ -144,39 +129,14 @@ function App() {
 
 
   const plantFlower = (x, y) => {
-    var flowerColorRoll = rollUpTo(flowerHues.length);
-    let flowerColor = flowerHues[flowerColorRoll];
-    let flowerColorName = colorNames[flowerColorRoll];
-    let budColor = grassColors[rollUpTo(grassColors.length)];
-    plotGrid[x][y] = {
-        isFlower: true,
-        flowerColor: flowerColor,
-        flowerColorName: flowerColorName,
-        flowerColorId: flowerColorRoll,
-        budColor: budColor,
-        name: flowerColorName + " Flower",
-        content: "flower",
-        row: x,
-        col: y,
-        age: 0,
-        marked: true
-      };
+      let id = plotGrid[x][y].id;
+      plotGrid[x][y] = generateFlower({x, y, id});
       setPlotGrid([...plotGrid]);
-
     }
 
     const killFlower = (x, y) => {
-      let color = grassColors[rollUpTo(grassColors.length)];
       let id = plotGrid[x][y].id;
-      plotGrid[x][y] = {
-        id: id,
-        isFlower: false,
-        color: color,
-        name: "Empty",
-        content: "grass",
-        row: x,
-        col: y
-      };
+      plotGrid[x][y] = generateDeadPlot({x, y, id})
       setPlotGrid([...plotGrid]);
     }
 
@@ -191,12 +151,17 @@ function App() {
       });
     });
 
-    //then we let our adults breed
+    //We don't want to kill anyone till the end, but we also don't want
+    // to loop through the grid more than once, so we'll keep a
+    // death list that we'll revisit once everyone gets a chance to breed.
+
+    let deathList = [];
+
+    //then we let our healthy adults breed
     times(plotGrid.length, row => {
       times(plotGrid[row].length, col=> {
         if (!plotGrid[row][col].marked){
           plotGrid[row][col].marked = true;
-
 
 
           //only age buds at the right time of day.
@@ -210,14 +175,19 @@ function App() {
               let pick = empties[rollUpTo(empties.length)];
               if (pick) plantFlower(pick.row, pick.col);
             } else {
-              //Overpopulation
+              //Overpopulation - roll to mark flower for death
               let roll = rollUpTo(3);
-              if (roll===2) killFlower(row, col);
+              if (!roll) deathList.push({row, col});
             }
           }
         }
 
       });
+    });
+
+    //Everybody who is going to breed has now bred.
+    times(deathList.length, i => {
+      killFlower(deathList[i].row, deathList[i].col);
     });
 
 
@@ -231,8 +201,6 @@ function App() {
   else if ( trueTime % 3 === 1 ) { timeOfDay = <WiDaySunny size={40} style={{backgroundColor: '#dbbd72', padding: '3 2 0 2', borderRadius: '10px', border: '2px solid white'}}/>; }
   else if ( trueTime % 3 === 2 ) { timeOfDay = <WiNightAltPartlyCloudy size={40} style={{backgroundColor: '#739cde', padding: '3 2 0 2', borderRadius: '10px', border: '2px solid white'}}/>; }
 
-console.log("Rendering app.");
-console.log(plotGrid);
   return (
     <ThemeProvider theme={theme}>
     <div className="App">

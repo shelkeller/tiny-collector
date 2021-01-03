@@ -8,8 +8,6 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import OptionsDialog from "./../OptionsDialog";
 
-
-
 const Plot = props => {
   let { plot, handleClick, performGather } = props;
   let classy = "hexagon "+plot.content;
@@ -17,7 +15,7 @@ const Plot = props => {
   let color = ""
 
   if (plot.isFlower && plot.age >=1 ) {
-    color = plot.flowerColor;
+    color = plot.flowerHex;
     content = <LocalFlorist />
   };
   if (plot.isFlower && plot.age < 1 ){
