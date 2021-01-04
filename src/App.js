@@ -2,10 +2,9 @@ import './styles/App.css';
 import times from 'lodash/times';
 import PlotRow from './components/PlotGrid/PlotRow';
 import Inventory from './components/Inventory';
-
 import { useState } from 'react';
 import { rollUpTo, generateFlower, generateDeadPlot } from './utils/dice';
-import {flowerColors, flowerColorsAccessible } from './constants/colors';
+import { flowerColors, flowerColorsAccessible } from './constants/colors';
 import { gameConfig } from './config/gameConfig';
 import { WiDaySunny, WiSunrise, WiNightAltPartlyCloudy } from "weather-icons-react";
 import Fab from '@material-ui/core/Fab';
@@ -162,7 +161,10 @@ function App() {
               plotGrid[pick.row][pick.col].marked = true;
             } else {
               //Overpopulation - roll to mark flower for death. Sorry dude
-              let roll = rollUpTo(4);
+              let roll = rollUpTo(gameConfig.resilience);
+              // resilience is probably set to something like 4
+              // which means roll will be an integer between 0 and 3
+              // the flower gets pushed onto the death list if the roll is 0.
               if (!roll) deathList.push({row, col});
             }
           }

@@ -5,13 +5,14 @@ import './styles/hexagon.css';
 import App from './App';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {Helmet} from "react-helmet";
+import { gameConfig } from './config/gameConfig';
 
 
 ReactDOM.render(
   // <React.StrictMode>
     <>
     <Helmet>
-      <title>{'Tiny Collector'}</title>
+      <title>{gameConfig.title}</title>
     </Helmet>
     <App />
     </>,

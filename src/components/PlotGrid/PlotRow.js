@@ -1,5 +1,5 @@
 import Plot from "./Plot";
-import { rollUpTo } from './../../utils/dice';
+import { rollUpTo, generateDeadPlot } from './../../utils/dice';
 import { grassColors } from './../../constants/colors';
 
 
@@ -34,20 +34,8 @@ const PlotRow = props => {
     inventoryStateSetter([...inventoryState, newSlot]);
 }
     let color = grassColors[rollUpTo(grassColors.length)];
-    gridState[plot.row][plot.col] = {
-      id: id,
-      isFlower: false,
-      color: color,
-      name: "Empty",
-      content: "grass",
-      row: plot.row,
-      col: plot.col
-    };
+    gridState[plot.row][plot.col] = generateDeadPlot({x: plot.row, y:plot.col, id: plot.id });
     gridStateSetter([...gridState]);
-
-
-
-
   }
 
   return (

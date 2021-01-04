@@ -6,9 +6,22 @@ import Paper from '@material-ui/core/Paper';
 import Badge from '@material-ui/core/Badge';
 
 import { makeStyles, createMuiTheme, withStyles } from '@material-ui/core/styles';
+/*
+  TODO:
+  sort items before displaying.
+  
+  This component displays a row of colored squares
+  aligning with an inventory array
+  which is expected to contain one object per
+  color present and a quantity.
 
-  const Inventory = ( data ) =>{
-    let { flowerHues, items, setItems } = data;
+  Inventory item: { flowerColor<int>, colorName<string>, quantity<int> }
+  We want to display nothing if quantity is 0
+  an Avatar without a Badge if quantity is 1
+  and an Avatar with a Badge if quantity is 0
+*/
+  const Inventory = ( props ) =>{
+    let { flowerHues, items, setItems } = props;
 
     const useStyles = makeStyles((theme) => ({
        root: {
@@ -32,11 +45,12 @@ import { makeStyles, createMuiTheme, withStyles } from '@material-ui/core/styles
     const classes = useStyles();
 
 
-    //The purpose of the Wrapper function is to ensure that
-    // the element is only wrapped if the condition is met.
-    // We only want the quantity badge to appear if the
-    // quantity is greater than 1.
-    const Wrapper = ({ children, condition, wrapper }) =>
+/*
+  This is a conditional wrapper to avoid duplicate code -
+  I didn't want to make a whole new component to render for
+  when I don't want to display a badge.
+*/
+    const OnlyWrapIf = ({ children, condition, wrapper }) =>
 condition ? wrapper(children) : children;
 
     return (
@@ -47,7 +61,7 @@ condition ? wrapper(children) : children;
                {items.map((value, index) => {
                  return(
                  <Grid key={index} item>
-                 <Wrapper
+                 <OnlyWrapIf
                     condition={ value.quantity >1 }
                     wrapper={children =>
                         <StyledBadge
@@ -59,7 +73,7 @@ condition ? wrapper(children) : children;
                      <Avatar component={Paper} style={{backgroundColor: flowerHues[value.flowerColor], color: "white"}}elevation={1} variant="rounded">
                          <LocalFlorist />
                        </Avatar>
-                      </Wrapper>
+                      </OnlyWrapIf>
 
                  </Grid>
                )})}
