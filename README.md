@@ -1,10 +1,14 @@
-# Getting Started with Create React App
+# Tiny Collector.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
 In the project directory, you can run:
+
+### `npm run deploy`
+
+Builds and deploys the app to a gh-pages branch, which is used to display the app at [my GitHub Pages page](https://shelkeller.github.io/tiny-collector/).
 
 ### `npm start`
 
