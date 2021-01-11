@@ -1,6 +1,6 @@
 # Tiny Collector
 
-See it running [here](https://shelkeller.github.io/tiny-collector/).
+See it running [here](https://shelkeller.github.io/tiny-collector/). It isn't done and it isn't good. It's only cute. 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
