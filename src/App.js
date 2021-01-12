@@ -198,6 +198,7 @@ function App() {
   else if ( trueTime % 3 === 1 ) { timeOfDay = <WiDaySunny size={40} style={{backgroundColor: '#dbbd72', padding: '3 2 0 2', borderRadius: '10px', border: '2px solid white'}}/>; }
   else if ( trueTime % 3 === 2 ) { timeOfDay = <WiNightAltPartlyCloudy size={40} style={{backgroundColor: '#739cde', padding: '3 2 0 2', borderRadius: '10px', border: '2px solid white'}}/>; }
 
+  let infoTextStyle = {fontSize: '14px', margin: '2em'};
   return (
     <ThemeProvider theme={theme}>
     <div className="App">
@@ -210,6 +211,13 @@ function App() {
          }}>
          <UpdateIcon />
        </Fab>
+       <div style={infoTextStyle}>
+         <p>{'Refresh the page if you see no flowers.'}</p>
+         <p>{'Proceed time with the button above. Click flowers to collect them.'}</p>
+         <p>{'Overcrowded flowers might die.'}</p>
+        <p>{'Coming soon: color breeding!'}</p>
+       </div>
+       
        <p>{timeOfDay}</p>
        <p> {'Day '+displayTime} </p>
       <Inventory flowerHues={flowerHues} items={inventory} setItems={setInventory}/>
