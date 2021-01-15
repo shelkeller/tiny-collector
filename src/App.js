@@ -257,7 +257,7 @@ function App() {
       <TopBar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen}/>
       <Switch>
         <Route path="/about">
-          <Card style={{margin: "7em", padding: "2em"}}>
+          <Card style={{margin: "2em", padding: "2em"}}>
           <h1>About</h1>
             <p>{'This toy-game-thing was born out of an appreciation for hexagons, cellular automata, and Animal Crossing.'}</p>
             <p>{'I also wanted to explore Hooks, as well as implement a few other React technologies I had not gotten the chance to play with yet.' }</p>
