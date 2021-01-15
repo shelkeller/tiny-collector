@@ -2,6 +2,8 @@ import './styles/App.css';
 import times from 'lodash/times';
 import PlotRow from './components/PlotGrid/PlotRow';
 import Inventory from './components/Inventory';
+import TopBar from './components/TopBar';
+import MenuDrawer from './components/MenuDrawer';
 import { useState } from 'react';
 import { rollUpTo, generateFlower, generateDeadPlot } from './utils/dice';
 import { flowerColors, flowerColorsAccessible } from './constants/colors';
@@ -63,6 +65,7 @@ function App() {
   const [plotGrid, setPlotGrid] = useState(generatePlots(rowSize*(rowSize-1)));
   const [trueTime, setTrueTime] = useState(0);
   const [inventory, setInventory] = useState([]);
+
 
   // Days are divided into 3 sections. "trueTime" will always reflect exactly
   // how many time units have passed; displayTime shows what day we are on.
@@ -180,15 +183,12 @@ function App() {
     times(deathList.length, i => {
       //at this point we only want to kill flowers who are STILL
       //under the conditions of overpopulation;
-      //the issue may have been resolve by a neighbor's death so let's check again
+      //the issue may have been resolved by a neighbor's death so let's check again
       let empties = findEmptyNeighbors(deathList[i].row, deathList[i].col);
       if (!empties.length) {
         killFlower(deathList[i].row, deathList[i].col);
       }
     });
-
-
-
   }
 
   let timeOfDay = "";
@@ -199,11 +199,15 @@ function App() {
   else if ( trueTime % 3 === 2 ) { timeOfDay = <WiNightAltPartlyCloudy size={40} style={{backgroundColor: '#739cde', padding: '3 2 0 2', borderRadius: '10px', border: '2px solid white'}}/>; }
 
   let infoTextStyle = {fontSize: '14px', margin: '2em'};
+
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+
   return (
     <ThemeProvider theme={theme}>
+      <TopBar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
     <div className="App">
       <header className="App-header">
-      {title}
        <Fab variant="extended" color="primary" onClick={() =>{
            step();
          }} style={{
@@ -217,7 +221,7 @@ function App() {
          <p>{'Overcrowded flowers might die.'}</p>
         <p>{'Coming soon: color breeding!'}</p>
        </div>
-       
+
        <p>{timeOfDay}</p>
        <p> {'Day '+displayTime} </p>
       <Inventory flowerHues={flowerHues} items={inventory} setItems={setInventory}/>
@@ -240,7 +244,9 @@ function App() {
         })}
       </div>
       </header>
+
     </div>
+    <MenuDrawer open={drawerOpen} setOpen={setDrawerOpen} />
     </ThemeProvider>
   );
 }
