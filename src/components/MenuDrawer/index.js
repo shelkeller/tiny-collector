@@ -1,16 +1,23 @@
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import Drawer from '@material-ui/core/Drawer';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import InfoIcon from '@material-ui/icons/Info';
 import SpaIcon from '@material-ui/icons/Spa';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -44,7 +51,7 @@ let { open, setOpen } = props;
 
  const theme = useTheme();
  const classes = useStyles();
-
+ const linkStyle = { color: "#666", textDecoration: "none"};
   return (
     <Drawer
   className={classes.drawer}
@@ -62,12 +69,18 @@ let { open, setOpen } = props;
   </div>
   <Divider />
   <List>
-    {['Tiny Collector', 'About'].map((text, index) => (
-      <ListItem button key={text}>
-        <ListItemIcon>{index % 2 === 0 ? <SpaIcon /> : <InfoIcon />}</ListItemIcon>
-        <ListItemText primary={text} />
-      </ListItem>
-    ))}
+  <Link style={linkStyle} to="/">
+    <ListItem>
+      <ListItemIcon><SpaIcon /></ListItemIcon>
+      <ListItemText>Tiny Collector</ListItemText>
+    </ListItem>
+  </Link>
+  <Link style={linkStyle}  to="/about">
+    <ListItem>
+      <ListItemIcon><InfoIcon /></ListItemIcon>
+      <ListItemText>About</ListItemText>
+    </ListItem>
+    </Link>
   </List>
   <Divider />
 </Drawer>

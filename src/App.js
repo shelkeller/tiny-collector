@@ -4,21 +4,24 @@ import PlotRow from './components/PlotGrid/PlotRow';
 import Inventory from './components/Inventory';
 import TopBar from './components/TopBar';
 import MenuDrawer from './components/MenuDrawer';
-import { useState } from 'react';
-import { rollUpTo, generateFlower, generateDeadPlot } from './utils/dice';
-import { flowerColors, flowerColorsAccessible } from './constants/colors';
-import { gameConfig } from './config/gameConfig';
-import { WiDaySunny, WiSunrise, WiNightAltPartlyCloudy } from "weather-icons-react";
+import {useState} from 'react';
+import {rollUpTo, generateFlower, generateDeadPlot} from './utils/dice';
+import {flowerColors, flowerColorsAccessible} from './constants/colors';
+import {gameConfig} from './config/gameConfig';
+import {WiDaySunny, WiSunrise, WiNightAltPartlyCloudy} from "weather-icons-react";
 import Fab from '@material-ui/core/Fab';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
 
-import {
-  createMuiTheme,
-  ThemeProvider,
-} from '@material-ui/core/styles';
+import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import UpdateIcon from '@material-ui/icons/Update';
 
+import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 
-let flowerHues = gameConfig.accessibilityMode ? flowerColorsAccessible : flowerColors;
+let flowerHues = gameConfig.accessibilityMode
+  ? flowerColorsAccessible
+  : flowerColors;
 
 //returns a 2D array "plot" objects: {id, isFlower, color, name, content, row, column}
 const generatePlots = (size) => {
@@ -26,17 +29,18 @@ const generatePlots = (size) => {
   let plots2D = [];
 
   times(size, id => {
-      let dice = rollUpTo(100); // roll a 100 sided die
-      if (dice<=gameConfig.fertility){ // chance of rolling a flower
-        var ageRoll = rollUpTo(2); // select age
-        plots[id] = generateFlower({age: ageRoll, id: id});
-      } else {
-        plots[id] = generateDeadPlot({id: id})
-      }
+    let dice = rollUpTo(100); // roll a 100 sided die
+    if (dice <= gameConfig.fertility) { // chance of rolling a flower
+      var ageRoll = rollUpTo(2); // select age
+      plots[id] = generateFlower({age: ageRoll, id: id});
+    } else {
+      plots[id] = generateDeadPlot({id: id})
+    }
   });
 
   //We splice it into rows, and make a 2D array of those.
-  while(plots.length) plots2D.push(plots.splice(0, gameConfig.rowSize));
+  while (plots.length)
+    plots2D.push(plots.splice(0, gameConfig.rowSize));
 
   // load up the plots with coordinate information.
   // This will be used to determine neighbors later.
@@ -54,24 +58,23 @@ const theme = createMuiTheme({
   palette: {
     primary: {
       main: "#185653"
-    },
-  },
+    }
+  }
 });
 
 function App() {
   const rowSize = gameConfig.rowSize;
   const title = gameConfig.title;
 
-  const [plotGrid, setPlotGrid] = useState(generatePlots(rowSize*(rowSize-1)));
+  const [plotGrid, setPlotGrid] = useState(generatePlots(rowSize * (rowSize - 1)));
   const [trueTime, setTrueTime] = useState(0);
   const [inventory, setInventory] = useState([]);
 
-
   // Days are divided into 3 sections. "trueTime" will always reflect exactly
   // how many time units have passed; displayTime shows what day we are on.
-  const displayTime = 1+Math.floor(trueTime/3);
+  const displayTime = 1 + Math.floor(trueTime / 3);
 
-  const findNeighbors = (x , y) => {
+  const findNeighbors = (x, y) => {
     //TODO: This is broken. There's a different formula for even and odd rows.
     /*
     neighbors will depend on whether y is even or odd
@@ -92,21 +95,45 @@ function App() {
     */
 
     let neighbors = [];
-    if (x > 0)  neighbors.push({row: x-1, col: y});
-    if (y < gameConfig.rowSize-1) neighbors.push({row: x, col: y+1});
-    if (y < gameConfig.rowSize-1) neighbors.push({row: x, col: y+1});
-    if (x < gameConfig.rowSize-2) neighbors.push({row: x+1, col: y});
-    if (x < gameConfig.rowSize-2 && y > 0 ) neighbors.push({row: x+1, col: y-1});
-    if (x > 0 && y > 0) neighbors.push({row: x-1, col: y});
+    if (x > 0)
+      neighbors.push({
+        row: x - 1,
+        col: y
+      });
+    if (y < gameConfig.rowSize - 1)
+      neighbors.push({
+        row: x,
+        col: y + 1
+      });
+    if (y < gameConfig.rowSize - 1)
+      neighbors.push({
+        row: x,
+        col: y + 1
+      });
+    if (x < gameConfig.rowSize - 2)
+      neighbors.push({
+        row: x + 1,
+        col: y
+      });
+    if (x < gameConfig.rowSize - 2 && y > 0)
+      neighbors.push({
+        row: x + 1,
+        col: y - 1
+      });
+    if (x > 0 && y > 0)
+      neighbors.push({
+        row: x - 1,
+        col: y
+      });
 
     return neighbors;
   }
 
-  const findEmptyNeighbors = (x , y) =>{
+  const findEmptyNeighbors = (x, y) => {
     let neighbors = findNeighbors(x, y);
     let empties = [];
     times(neighbors.length, (i) => {
-      if (!plotGrid[neighbors[i].row][neighbors[i].col].isFlower){
+      if (!plotGrid[neighbors[i].row][neighbors[i].col].isFlower) {
         empties.push(plotGrid[neighbors[i].row][neighbors[i].col]);
       }
     });
@@ -114,27 +141,26 @@ function App() {
   }
 
   const plantFlower = (x, y) => {
-      let id = plotGrid[x][y].id;
-      plotGrid[x][y] = generateFlower({x, y, id, age:0});
-      setPlotGrid([...plotGrid]);
+    let id = plotGrid[x][y].id;
+    plotGrid[x][y] = generateFlower({x, y, id, age: 0});
+    setPlotGrid([...plotGrid]);
   }
 
   const killFlower = (x, y) => {
-      let id = plotGrid[x][y].id;
-      plotGrid[x][y] = generateDeadPlot({x, y, id})
-      setPlotGrid([...plotGrid]);
+    let id = plotGrid[x][y].id;
+    plotGrid[x][y] = generateDeadPlot({x, y, id})
+    setPlotGrid([...plotGrid]);
   }
 
-
-// This is the heaviest function in the game. It represents the procession
-// of a unit of time.
+  // This is the heaviest function in the game. It represents the procession
+  // of a unit of time.
   const step = () => {
     // first we increment time
     setTrueTime(trueTime + 1);
 
     //unmark everyone just in case
     times(plotGrid.length, row => {
-      times(plotGrid[row].length, col=> {
+      times(plotGrid[row].length, col => {
         plotGrid[row][col].marked = false;
       });
     });
@@ -147,20 +173,21 @@ function App() {
 
     //then we let our healthy adults breed
     times(plotGrid.length, row => {
-      times(plotGrid[row].length, col=> {
-        if (!plotGrid[row][col].marked){
+      times(plotGrid[row].length, col => {
+        if (!plotGrid[row][col].marked) {
           plotGrid[row][col].marked = true;
 
           //only age buds at the right time of day.
           if (plotGrid[row][col].age < 2 && (trueTime % 3 === 2 || trueTime % 3 === 0)) {
-            plotGrid[row][col].age ++;
+            plotGrid[row][col].age++;
           };
 
-          if (plotGrid[row][col].isFlower && plotGrid[row][col].age===2){
+          if (plotGrid[row][col].isFlower && plotGrid[row][col].age === 2) {
             let empties = findEmptyNeighbors(row, col);
-            if (empties.length){
+            if (empties.length) {
               let pick = empties[rollUpTo(empties.length)];
-              if (pick) plantFlower(pick.row, pick.col);
+              if (pick)
+                plantFlower(pick.row, pick.col);
               plotGrid[pick.row][pick.col].marked = true;
             } else {
               //Overpopulation - roll to mark flower for death. Sorry dude
@@ -168,9 +195,10 @@ function App() {
               // resilience is probably set to something like 4
               // which means roll will be an integer between 0 and 3
               // the flower gets pushed onto the death list if the roll is 0.
-              if (!roll) deathList.push({row, col});
+              if (!roll)
+                deathList.push({row, col});
+              }
             }
-          }
         }
 
       });
@@ -194,61 +222,96 @@ function App() {
   let timeOfDay = "";
 
   // TODO: this is hideous. Make a component for this weather icon.
-  if ( trueTime % 3 === 0) { timeOfDay = <WiSunrise size={40} style={{backgroundColor: '#d47986', padding: '3 2 0 2', borderRadius: '10px', border: '2px solid white'}}/>; }
-  else if ( trueTime % 3 === 1 ) { timeOfDay = <WiDaySunny size={40} style={{backgroundColor: '#dbbd72', padding: '3 2 0 2', borderRadius: '10px', border: '2px solid white'}}/>; }
-  else if ( trueTime % 3 === 2 ) { timeOfDay = <WiNightAltPartlyCloudy size={40} style={{backgroundColor: '#739cde', padding: '3 2 0 2', borderRadius: '10px', border: '2px solid white'}}/>; }
+  if (trueTime % 3 === 0) {
+    timeOfDay = <WiSunrise size={40} style={{
+        backgroundColor: '#d47986',
+        padding: '3 2 0 2',
+        borderRadius: '10px',
+        border: '2px solid white'
+      }}/>;
+  } else if (trueTime % 3 === 1) {
+    timeOfDay = <WiDaySunny size={40} style={{
+        backgroundColor: '#dbbd72',
+        padding: '3 2 0 2',
+        borderRadius: '10px',
+        border: '2px solid white'
+      }}/>;
+  } else if (trueTime % 3 === 2) {
+    timeOfDay = <WiNightAltPartlyCloudy size={40} style={{
+        backgroundColor: '#739cde',
+        padding: '3 2 0 2',
+        borderRadius: '10px',
+        border: '2px solid white'
+      }}/>;
+  }
 
-  let infoTextStyle = {fontSize: '14px', margin: '2em'};
+  let infoTextStyle = {
+    fontSize: '14px',
+    margin: '2em'
+  };
 
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  return (<ThemeProvider theme={theme}>
+    <Router>
+      <TopBar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen}/>
+      <Switch>
+        <Route path="/about">
+          <Card style={{margin: "7em", padding: "2em"}}>
+          <h1>About</h1>
+            <p>{'This toy-game-thing was born out of an appreciation for hexagons, cellular automata, and Animal Crossing.'}</p>
+            <p>{'I also wanted to explore Hooks, as well as implement a few other React technologies I had not gotten the chance to play with yet.' }</p>
+            <br /><p>{'- Shel, Front End Developer'}</p>
+            <a href="https://www.linkedin.com/in/shel-keller/">(My LinkedIn profile)</a>
+            </Card>
+        </Route>
+          <Route path="/">
+          <div className="App">
+            <header className="App-header">
+              <Fab variant="extended" color="primary" onClick={() => {
+                  step();
+                }} style={{
+                  margin: "1em"
+                }}>
+                <UpdateIcon/>
+              </Fab>
+              <div style={infoTextStyle}>
+                <p>{'Refresh the page if you see no flowers.'}</p>
+                <p>{'Proceed time with the button above. Click flowers to collect them.'}</p>
+                <p>{'Overcrowded flowers might die.'}</p>
+                <p>{'Coming soon: color breeding!'}</p>
+              </div>
 
-  return (
-    <ThemeProvider theme={theme}>
-      <TopBar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
-    <div className="App">
-      <header className="App-header">
-       <Fab variant="extended" color="primary" onClick={() =>{
-           step();
-         }} style={{
-           margin: "1em"
-         }}>
-         <UpdateIcon />
-       </Fab>
-       <div style={infoTextStyle}>
-         <p>{'Refresh the page if you see no flowers.'}</p>
-         <p>{'Proceed time with the button above. Click flowers to collect them.'}</p>
-         <p>{'Overcrowded flowers might die.'}</p>
-        <p>{'Coming soon: color breeding!'}</p>
-       </div>
-
-       <p>{timeOfDay}</p>
-       <p> {'Day '+displayTime} </p>
-      <Inventory flowerHues={flowerHues} items={inventory} setItems={setInventory}/>
-
-     {/*
+              <p>{timeOfDay}</p>
+              <p>
+                {'Day ' + displayTime}
+              </p>
+              <Inventory flowerHues={flowerHues} items={inventory} setItems={setInventory}/> {/*
      I get that it would probably be a good idea to
      have another component called PlotGrid or something
      but really all it would do is wrap this set of PlotRows
      in a div with this className. and that just isn't enough
      stuff to justify a whole file or even its own variable
      I think
-     */}
-      <div className="honeycomb" style={{paddingTop: "2em"}}>
-        {plotGrid.map((plotRow, i) => {
-          return <PlotRow
-            plots={plotRow}
-            gridState={plotGrid} gridStateSetter={setPlotGrid}
-            inventoryState={inventory} inventoryStateSetter={setInventory}
-/>
-        })}
-      </div>
-      </header>
+     */
+              }
+              <div className="honeycomb" style={{
+                  paddingTop: "2em"
+                }}>
+                {
+                  plotGrid.map((plotRow, i) => {
+                    return <PlotRow plots={plotRow} gridState={plotGrid} gridStateSetter={setPlotGrid} inventoryState={inventory} inventoryStateSetter={setInventory}/>
+                  })
+                }
+              </div>
+            </header>
 
-    </div>
-    <MenuDrawer open={drawerOpen} setOpen={setDrawerOpen} />
-    </ThemeProvider>
-  );
+          </div>
+        </Route>
+      </Switch>
+      <MenuDrawer open={drawerOpen} setOpen={setDrawerOpen}/>
+    </Router>
+  </ThemeProvider>);
 }
 
 export default App;
