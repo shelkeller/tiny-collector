@@ -1,7 +1,6 @@
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import Drawer from '@material-ui/core/Drawer';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem';
@@ -13,9 +12,6 @@ import InfoIcon from '@material-ui/icons/Info';
 import SpaIcon from '@material-ui/icons/Spa';
 
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
   Link
 } from "react-router-dom";
 
@@ -69,14 +65,14 @@ let { open, setOpen } = props;
   </div>
   <Divider />
   <List>
-  <Link style={linkStyle} to="/">
-    <ListItem>
+  <Link style={linkStyle} to="/tiny-collector">
+    <ListItem onClick={handleDrawerClose}>
       <ListItemIcon><SpaIcon /></ListItemIcon>
       <ListItemText>Tiny Collector</ListItemText>
     </ListItem>
   </Link>
   <Link style={linkStyle}  to="/about">
-    <ListItem>
+    <ListItem onClick={handleDrawerClose}>
       <ListItemIcon><InfoIcon /></ListItemIcon>
       <ListItemText>About</ListItemText>
     </ListItem>

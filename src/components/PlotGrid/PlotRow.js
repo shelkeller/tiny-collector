@@ -15,12 +15,9 @@ const PlotRow = props => {
 
   const handleClick = (id) => {
     let thePlot = plots.filter((plot) => {return plot.id === id})[0];
-    console.log(thePlot);
   }
 
   const performGather = (plot) =>{
-    let id = plot.id;
-
     let slotInInventory = inventoryState.findIndex((item) => item.flowerColor === plot.flowerColorId);
     if (slotInInventory > -1) {
       inventoryState[slotInInventory].quantity ++;
@@ -33,7 +30,6 @@ const PlotRow = props => {
     }
     inventoryStateSetter([...inventoryState, newSlot]);
 }
-    let color = grassColors[rollUpTo(grassColors.length)];
     gridState[plot.row][plot.col] = generateDeadPlot({x: plot.row, y:plot.col, id: plot.id });
     gridStateSetter([...gridState]);
   }
@@ -42,7 +38,7 @@ const PlotRow = props => {
     <div className="ibws-fix">
     {
       plots.map((plot, i)=>{
-        return <Plot key={"key"+i} plot={plot} handleClick={handleClick} performGather={performGather} />
+        return <Plot key={"plot"+i} plot={plot} handleClick={handleClick} performGather={performGather} />
       })
     }
     </div>

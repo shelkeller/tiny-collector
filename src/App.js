@@ -5,14 +5,19 @@ import Inventory from './components/Inventory';
 import TopBar from './components/TopBar';
 import MenuDrawer from './components/MenuDrawer';
 import {useState} from 'react';
-import {rollUpTo, generateFlower, generateDeadPlot} from './utils/dice';
+import {rollUpTo, generateFlower, generateDeadPlot, generateFirstPlots, findNeighbors } from './utils/dice';
 import {flowerColors, flowerColorsAccessible} from './constants/colors';
 import {gameConfig} from './config/gameConfig';
 import {WiDaySunny, WiSunrise, WiNightAltPartlyCloudy} from "weather-icons-react";
 import Fab from '@material-ui/core/Fab';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import UpdateIcon from '@material-ui/icons/Update';
@@ -22,37 +27,6 @@ import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 let flowerHues = gameConfig.accessibilityMode
   ? flowerColorsAccessible
   : flowerColors;
-
-//returns a 2D array "plot" objects: {id, isFlower, color, name, content, row, column}
-const generatePlots = (size) => {
-  let plots = [];
-  let plots2D = [];
-
-  times(size, id => {
-    let dice = rollUpTo(100); // roll a 100 sided die
-    if (dice <= gameConfig.fertility) { // chance of rolling a flower
-      var ageRoll = rollUpTo(2); // select age
-      plots[id] = generateFlower({age: ageRoll, id: id});
-    } else {
-      plots[id] = generateDeadPlot({id: id})
-    }
-  });
-
-  //We splice it into rows, and make a 2D array of those.
-  while (plots.length)
-    plots2D.push(plots.splice(0, gameConfig.rowSize));
-
-  // load up the plots with coordinate information.
-  // This will be used to determine neighbors later.
-  times(plots2D.length, r => {
-    times(plots2D[r].length, c => {
-      plots2D[r][c].row = r;
-      plots2D[r][c].col = c;
-    });
-  });
-
-  return plots2D;
-}
 
 const theme = createMuiTheme({
   palette: {
@@ -66,68 +40,13 @@ function App() {
   const rowSize = gameConfig.rowSize;
   const title = gameConfig.title;
 
-  const [plotGrid, setPlotGrid] = useState(generatePlots(rowSize * (rowSize - 1)));
+  const [plotGrid, setPlotGrid] = useState(generateFirstPlots(rowSize * (rowSize - 1)));
   const [trueTime, setTrueTime] = useState(0);
   const [inventory, setInventory] = useState([]);
 
   // Days are divided into 3 sections. "trueTime" will always reflect exactly
   // how many time units have passed; displayTime shows what day we are on.
   const displayTime = 1 + Math.floor(trueTime / 3);
-
-  const findNeighbors = (x, y) => {
-    //TODO: This is broken. There's a different formula for even and odd rows.
-    /*
-    neighbors will depend on whether y is even or odd
-    clockwise:
-    up: x-1, y
-    upright: x-1, y+1
-    downright: x, y+1
-    down: x+1, y
-    downleft: x+1, y-1
-    upleft: x-1, y-1
-
-    if x>0, get up
-    if x>0 && y<gameConfig.rowSize, get upright
-    if y<gameConfig.rowSize, get downRight
-    if x<gameConfig.rowSize-1, get down
-    if x<gameConfig.rowSize-1 && y>0, get downleft
-    if x>0 and y>0, get upleft
-    */
-
-    let neighbors = [];
-    if (x > 0)
-      neighbors.push({
-        row: x - 1,
-        col: y
-      });
-    if (y < gameConfig.rowSize - 1)
-      neighbors.push({
-        row: x,
-        col: y + 1
-      });
-    if (y < gameConfig.rowSize - 1)
-      neighbors.push({
-        row: x,
-        col: y + 1
-      });
-    if (x < gameConfig.rowSize - 2)
-      neighbors.push({
-        row: x + 1,
-        col: y
-      });
-    if (x < gameConfig.rowSize - 2 && y > 0)
-      neighbors.push({
-        row: x + 1,
-        col: y - 1
-      });
-    if (x > 0 && y > 0)
-      neighbors.push({
-        row: x - 1,
-        col: y
-      });
-
-    return neighbors;
-  }
 
   const findEmptyNeighbors = (x, y) => {
     let neighbors = findNeighbors(x, y);
@@ -222,6 +141,8 @@ function App() {
   let timeOfDay = "";
 
   // TODO: this is hideous. Make a component for this weather icon.
+  // Make the colors consts also. 
+
   if (trueTime % 3 === 0) {
     timeOfDay = <WiSunrise size={40} style={{
         backgroundColor: '#d47986',
@@ -248,25 +169,73 @@ function App() {
   let infoTextStyle = {
     fontSize: '14px',
     margin: '2em'
-  };
+    };
 
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const goals = [
+    {
+      name: "React Hooks",
+      description: "This game is made up of entirely functional components. Becoming fluent with Hooks was my priority in creating it.",
+      checked: true
+    },
+    {
+      name: "Material UI",
+      description: "I was raised on Bootstrap and I'm excited to graduate to a more professional looking interface starter. I have opinions about Material, but I'm mostly a fan!",
+      checked: true
+    },
+    {
+      name: "React Router",
+      description: false,
+      checked: true
+    },
+    {
+      name: "Jest",
+      description: "I understand that testing the front end can save you big money in the long run but I am rusty! Looking forward to hanging onto this extremely valuable habit.",
+      checked: false
+    },
+    {
+      name: "React Context",
+      description: "I have some experience with Redux but I'm under the impression that Context can offer a lot of the same benefits with less developing time.",
+      checked: false
+    }
+  ]
 
   return (<ThemeProvider theme={theme}>
     <Router>
       <TopBar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen}/>
       <Switch>
         <Route path="/about">
-          <Card style={{margin: "2em", padding: "2em"}}>
+          <Card style={{margin: "2em", padding: "4em"}}>
           <h1>About</h1>
             <p>{'This toy-game-thing was born out of an appreciation for hexagons, cellular automata, and Animal Crossing.'}</p>
-            <p>{'I also wanted to explore Hooks, as well as implement a few other React technologies I had not gotten the chance to play with yet.' }</p>
+            <p>{'I wanted to implement a few technologies I had not gotten the chance to play with yet, including:' }</p>
+            <List>
+            {goals.map( (goal, i) => {
+              return (
+              <ListItem key={'goal'+i}>
+              <ListItemIcon>
+                { goal.checked &&
+                  <CheckBoxIcon />}
+                  { !goal.checked &&
+                  <CheckBoxOutlineBlankIcon />
+                  }
+              </ListItemIcon>
+              <ListItemText
+                primary={goal.name}
+                secondary={goal.description}
+              />
+           </ListItem>
+           )
+              
+            })}
+            </List>
             <br /><p>{'- Shel, Front End Developer'}</p>
             <a href="https://www.linkedin.com/in/shel-keller/">(My LinkedIn profile)</a>
             </Card>
         </Route>
-          <Route path="/">
-          <div className="App">
+          <Route path={["/", "/tiny-collector"]}>
+          <div className="App" style={{paddingTop: "4em"}}>
             <header className="App-header">
               <Fab variant="extended" color="primary" onClick={() => {
                   step();
@@ -286,14 +255,16 @@ function App() {
               <p>
                 {'Day ' + displayTime}
               </p>
-              <Inventory flowerHues={flowerHues} items={inventory} setItems={setInventory}/> {/*
-     I get that it would probably be a good idea to
-     have another component called PlotGrid or something
-     but really all it would do is wrap this set of PlotRows
-     in a div with this className. and that just isn't enough
-     stuff to justify a whole file or even its own variable
-     I think
-     */
+              <Inventory flowerHues={flowerHues} items={inventory} setItems={setInventory}/> 
+              {
+              /*
+              I get that it would probably be a good idea to
+              have another component called PlotGrid or something
+              but really all it would do is wrap this set of PlotRows
+              in a div with this className. and that just isn't enough
+              stuff to justify a whole file or even its own variable
+              I think
+              */
               }
               <div className="honeycomb" style={{
                   paddingTop: "2em"
