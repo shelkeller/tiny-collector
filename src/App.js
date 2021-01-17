@@ -245,7 +245,6 @@ function App() {
                 <UpdateIcon/>
               </Fab>
               <div style={infoTextStyle}>
-                <p>{'Refresh the page if you see no flowers.'}</p>
                 <p>{'Proceed time with the button above. Click flowers to collect them.'}</p>
                 <p>{'Overcrowded flowers might die.'}</p>
                 <p>{'Coming soon: color breeding!'}</p>
